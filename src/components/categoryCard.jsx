@@ -2,9 +2,13 @@ import React from 'react'
 
 const CategoryCard = ({ e }) => {
     return (
-        <div className=' m-4' >
-            <img src={e.productImage} alt="" height="280px" width="280px" />
-            <div className='text-center py-1' style={{ position: "relative", bottom: "150px", color: "black", fontSize: "110%", width: "17.5vw",  backgroundColor: "white" }}>{e.category.productCategory}</div>
+        <div className='w-100 h-100'>
+            <div  className='w-100 h-100' >
+            <img src={e.productImage} alt="" className='w-100 h-100 img-fluid'  />
+
+            </div>
+            <div className="w-100 text-center fs-4  position-relative bottom-50 text-dark fs-4 bg-light"  
+ >{e.category.productCategory}</div>
 
              
         </div>
@@ -13,5 +17,4 @@ const CategoryCard = ({ e }) => {
 }
 
 export default CategoryCard
-
 

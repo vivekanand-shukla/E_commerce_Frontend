@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import Navbar from './components/Navbar'
 import { useFetch } from "./customHooks/useFetch"
-import CategoryCard from "./components/categoryCard"
+import CategoryCard from "./components/CategoryCard"
+import {Link} from "react-router-dom"
 
 function App() {
   const mainUrl = `http://localhost:3000/api`
@@ -18,7 +19,6 @@ function App() {
         (t) => t.category.productCategory === item.category.productCategory
       )
   );
-
   console.log(catagoryData)
 
   const newArrivel = []
@@ -29,15 +29,14 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <div style={{ backgroundColor: "#f9f9f9" }}>
-        <div className="container">
-
-      
-          <div className="row my-4">
+     {/* <Link to={"/products"}>to product page</Link> */}
+      {/* <Navbar /> */}
+      <div  style={{ backgroundColor: "#f9f9f9" }}>
+        <div  className='container' >
+          <div className="row container my-5" >
             {catagoryData &&
               catagoryData.map((i) => (
-                <div className="col-6 col-md-4 col-lg-3 mb-3" key={i._id}>
+                <div className="col-md-3" key={i._id}>
                   <CategoryCard e={i} />
                 </div>
               ))}
@@ -49,11 +48,7 @@ function App() {
               src="https://static.vecteezy.com/system/resources/thumbnails/002/006/775/small/paper-art-shopping-online-on-smartphone-and-new-buy-sale-promotion-backgroud-for-banner-market-ecommerce-free-vector.jpg"
               alt="banner"
               className="img-fluid"
-              style={{
-                height: "300px",
-                objectFit: "cover",
-                width: "100%"
-              }}
+             
             />
           </div>
 
@@ -77,23 +72,24 @@ function App() {
                     style={{
                       width: "120px",
                       height: "120px",
-                      backgroundColor: "#fff",
+                   
                       marginRight: "20px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center"
                     }}
-                  >
+                  > 
                     <img
                       src={n.productImage}
                       alt={n.category.productCategory}
                       style={{
-                        maxWidth: "100%",
-                        maxHeight: "100%",
-                        objectFit: "contain"
+                          height:"150px",
+                          width:"120px",
+                     
+                      
                       }}
                     />
-                  </div>
+                  </div> 
 
                
                   <div className='mx-2'>
@@ -116,4 +112,4 @@ function App() {
   )
 }
 
-export default App
+export default App  //style 1
