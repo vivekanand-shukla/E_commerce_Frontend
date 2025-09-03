@@ -5,8 +5,8 @@ import CategoryCard from "./components/CategoryCard"
 import {Link} from "react-router-dom"
 
 function App() {
-  const mainUrl = `http://localhost:3000/api`
-  const productsUrl = `/products`
+  const mainUrl = `https://e-commerce-app-backend-seven-sand.vercel.app`
+  const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
 
   if (data) {

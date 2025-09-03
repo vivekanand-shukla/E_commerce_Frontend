@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import { useFetch } from "../customHooks/useFetch"
 const ProductListining = () => {
-  const mainUrl = `http://localhost:3000/api`
-  const productsUrl = `/products`
+  const mainUrl = `https://e-commerce-app-backend-seven-sand.vercel.app`
+  const productsUrl = `api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
 
   const [isOpen, setIsOpen] = useState(true);
