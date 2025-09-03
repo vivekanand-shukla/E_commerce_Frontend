@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import { useFetch } from "../customHooks/useFetch"
 const ProductListining = () => {
   const mainUrl = `https://e-commerce-app-backend-seven-sand.vercel.app`
-  const productsUrl = `api/products`
+  const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
 
   const [isOpen, setIsOpen] = useState(true);
