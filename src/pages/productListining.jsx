@@ -1,16 +1,39 @@
 import './ProductListining.css'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import { useFetch } from "../customHooks/useFetch"
+import{ useParams } from "react-router-dom"
+function filterAll(priceFilter, category, rating, data) {
+  return data.filter(d => {
+    const priceMatch = priceFilter ? d.productPrice <= Number(priceFilter) : true;
+    const categoryMatch = category.length > 0 ? category.includes(d.category.productCategory) : true;
+    const ratingMatch = rating ? d.productRating >= Number(rating) : true;
+    return priceMatch && categoryMatch && ratingMatch;
+  });
+}
+
+
+
+
 const ProductListining = () => {
+
   const mainUrl = `https://e-commerce-app-backend-seven-sand.vercel.app`
   const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
-
+  const paramsCategory =  useParams()
+  const newParams=  paramsCategory.cat
   const [isOpen, setIsOpen] = useState(true);
-  if (data) {
-    // console.log(data)
+  const [priceFilter , setPriceFilter] = useState()
+  const [category , setCategory] = useState([newParams])
+  const [rating , setRating] = useState('')
+  const [priceShort , setPriceShort] = useState()
+  if (rating ) {
+    console.log(rating)
   }
+  // if (data ) {
+  //   console.log(data)
+  // }
+  
   const catagoryData = data?.filter(
     (item, index, self) =>
       index === self.findIndex(
@@ -18,15 +41,44 @@ const ProductListining = () => {
       )
   );
   // console.log()
+  function handleCategory(e){
+      const {checked , value} = e.target
+      if(checked){
+         setCategory( c => [...c , value])
+      }else{
+        setCategory(c => c.filter(e => e != value))
+      }
+  }
+  const [filter ,setFilter] = useState([])
+  useEffect(()=>{
 
+if (data  ) {
+  
+      const a =   filterAll (priceFilter , category , rating  ,data)
+      let b = [...a]
+     if( priceShort == "lowToHigh"){
+    b=  b.sort((c, d) => c.productPrice - d.productPrice);
+         
+     }else if( priceShort == "highToLow"){
+     b=     b.sort((c, d) => d.productPrice - c.productPrice);
+    }
+    setFilter(b)
+  } 
+  if(filter){
+    console.log("this is filter " ,filter )
+  }
+
+
+  }, [priceFilter , category ,rating ,data ,priceShort])
+  
   return (
     <div>
-      < Navbar  />
+      < Navbar className="w-100" />
 
       <div className='mainContainer w-100 d-flex py-2 d-flex flex-wrap' >
        
-         
-        <div  className={`sidebar ${isOpen ? "open" : "closed"}`}  style={{ width: "15%", background: "#f8f9fa" }} >  
+        <div style={{ width: "18%" ,height:"50%", background: "#f8f9fa", zIndex:7 }}>
+        <div  className={`sidebar ${isOpen ? "open" : "closed"}`}  style={{ width: "15%" ,height:"50%", background: "#f8f9fa" }} >  
           
           
           <div className='container' >
@@ -39,14 +91,14 @@ const ProductListining = () => {
             <div><p className=''></p></div>
 
 
-            <label for="priceRange" className="form-label  fw-bold" >Price</label>
-            <div className='w-100 d-flex justify-content-between' style={{ color: "#9c9c9cff" }}><span>50</span> <span>150</span> <span>200</span></div>
+            <label htmlFor="priceRange" className="form-label  fw-bold d-flex w-90 justify-content-between" ><span> Price</span>  {priceFilter && <small style={{ color: "#9c9c9cff" }} >  below:₹ {priceFilter} </small>}</label>
+            <div className='w-100 d-flex justify-content-between' style={{ color: "#9c9c9cff" }}><span>0</span> <span>100k</span> <span>200k</span></div>
             <input
               type="range"
               className="form-range custom-range"
-              min="50"
-              max="200"
-              id="priceRange"
+              min="0"
+              max="200000"
+              id="priceRange" onChange={(e)=> setPriceFilter(e.target.value)}
             />
 
             <style>
@@ -84,7 +136,7 @@ const ProductListining = () => {
             <div>
 
               <label htmlFor="" className='fw-bold'>category</label>
-              <div>{catagoryData?.map(n => <div><input type="checkbox" name="" id={n?._id} value={n?.category.productCategory} /> <label htmlFor={n?._id}>{n?.category.productCategory}</label></div>)}</div>
+              <div>{catagoryData?.map(n => <div key={n?._id}><input type="checkbox" onClick={handleCategory} name="Category" id={n?._id} value={n?.category.productCategory} /> <label htmlFor={n?._id}>{n?.category.productCategory}</label></div>)}</div>
 
             </div>
 
@@ -92,21 +144,21 @@ const ProductListining = () => {
             <div className="p-3">
 
               <p className="fw-bold">Rating</p>
-              <div className="d-flex flex-column gap-2">
+              <div className="d-flex flex-column gap-2" >
                 <div>
-                  <input type="radio" name="rating" id="rating4" value="4" defaultChecked />
+                  <input type="radio" name="rating" id="rating4" value="4"  onChange={(e)=> setRating(e.target.value)}/>
                   <label htmlFor="rating4" className="ms-2">4 Stars & above</label>
                 </div>
                 <div>
-                  <input type="radio" name="rating" id="rating3" value="3" />
+                  <input type="radio" name="rating" id="rating3" value="3"  onChange={(e)=> setRating(e.target.value)} />
                   <label htmlFor="rating3" className="ms-2">3 Stars & above</label>
                 </div>
                 <div>
-                  <input type="radio" name="rating" id="rating2" value="2" />
+                  <input type="radio" name="rating" id="rating2" value="2"  onChange={(e)=> setRating(e.target.value)} />
                   <label htmlFor="rating2" className="ms-2">2 Stars & above</label>
                 </div>
                 <div>
-                  <input type="radio" name="rating" id="rating1" value="1" />
+                  <input type="radio" name="rating" id="rating1" value="1"   onChange={(e)=> setRating(e.target.value)}/>
                   <label htmlFor="rating1" className="ms-2">1 Star & above</label>
                 </div>
               </div>
@@ -115,11 +167,11 @@ const ProductListining = () => {
               <p className="fw-bold mt-4">Sort by</p>
               <div className="d-flex flex-column gap-2">
                 <div>
-                  <input type="radio" name="sort" id="lowToHigh" value="lowToHigh" defaultChecked />
+                  <input type="radio" name="sort" id="lowToHigh" value="lowToHigh"   onChange={(e)=> setPriceShort(e.target.value)}  defaultChecked />
                   <label htmlFor="lowToHigh" className="ms-2">Price - Low to High</label>
                 </div>
                 <div>
-                  <input type="radio" name="sort" id="highToLow" value="highToLow" />
+                  <input type="radio" name="sort" id="highToLow" value="highToLow"  onChange={(e)=> setPriceShort(e.target.value)} />
                   <label htmlFor="highToLow" className="ms-2">Price - High to Low</label>
                 </div>
               </div>
@@ -130,12 +182,13 @@ const ProductListining = () => {
          <div><button className="btn my-btn btn-outline-secondary d-none" onClick={() => setIsOpen(!isOpen)}>
           ☰  
         </button></div>
-        <div className='w-75  px-0 mx-0' style={{ width: "85%" }}>
+        </div> 
+        <div className='w-75  px-0 mx-0' style={{ width: "85%"}}>
           {/* //card section   */}
 
-          <div className="container-fluid">
+          <div className="container-fluid"   >
 
-            <div className="d-flex  px-3 py-2">
+            <div className="d-flex  px-3 py-2"  >
 
               <h5 className="fw-bold mb-2">
                 Showing All Products
@@ -146,12 +199,12 @@ const ProductListining = () => {
             </div>
 
             {/* Products */}
-            <div className="row g-3 px-3">
+            <div className="row g-3 px-3" >
               {loading && <p>Loading products...</p>}
               {error && <p className="text-danger">Failed to load products</p>}
               {!loading && data?.length === 0 && <p>No products found</p>}
 
-              {data?.map((product) => (
+              {filter?.map((product) => (
                 <div className="col-md-4 col-lg-3" key={product._id}>
                   <div className="card h-100 border-0 shadow-sm">
                     {/* Product Image */}

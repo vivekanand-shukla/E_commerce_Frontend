@@ -11,7 +11,7 @@ const routes = createBrowserRouter([
     
   },
   {
-    path: "/products",
+    path: "/products/:cat",
     element: <ProductListining /> 
   }
 ])

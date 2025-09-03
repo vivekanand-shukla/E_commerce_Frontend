@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 const Navbar = () => {
   return (
-    <div className="container py-2" style={{ position: "sticky", top: "0" , zIndex: "5"}}>
+    <div className="container py-2 " style={{ position: "fixed", top: "0" , zIndex: "5", backgroundColor:"white", width:"100%"}}>
       <div className="d-flex flex-wrap justify-content-between align-items-center">
         
    

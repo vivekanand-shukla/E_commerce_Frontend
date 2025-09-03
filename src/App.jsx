@@ -30,14 +30,14 @@ function App() {
   return (
     <>
      <Link to={"/products"}>to product page</Link> 
-        <Navbar />  
+        <Navbar className="w-100" />  
        <div  style={{ backgroundColor: "#f9f9f9" }}>
         <div  className='container' >
           <div className="row container my-5" >
             {catagoryData &&
               catagoryData.map((i) => (
                 <div className="col-md-3 my-4" key={i._id}>
-                  <CategoryCard e={i} />
+                <Link to={`/products/${i.category.productCategory}`}> <CategoryCard e={i} /></Link> 
                 </div>
               ))}
           </div>

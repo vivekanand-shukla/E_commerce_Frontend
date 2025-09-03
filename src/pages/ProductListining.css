@@ -1,4 +1,7 @@
-
+ .sidebar {
+  position: fixed  !important;
+  top: 80px !important;
+ }
 
 @media screen and (max-width: 1025px) {
  
@@ -11,6 +14,9 @@
   background: #f8f9fa;
   min-height: 100vh;
   width: 80% !important;
+  position: fixed !important;
+  top: 0 !important;
+  z-index: 7;
 }
 
 .sidebar.closed {
