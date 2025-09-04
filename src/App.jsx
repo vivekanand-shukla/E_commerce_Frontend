@@ -92,4 +92,4 @@ function App() {
   )
 }
 
-export default App  //style 1
+export default App  

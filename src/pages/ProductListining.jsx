@@ -2,7 +2,7 @@ import './ProductListining.css'
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import { useFetch } from "../customHooks/useFetch"
-import{ useParams } from "react-router-dom"
+import{ Link, useParams } from "react-router-dom"
 function filterAll(priceFilter, category, rating, data) {
   return data.filter(d => {
     const priceMatch = priceFilter ? d.productPrice <= Number(priceFilter) : true;
@@ -23,16 +23,22 @@ const ProductListining = () => {
   const paramsCategory =  useParams()
   const newParams=  paramsCategory.cat
   const [isOpen, setIsOpen] = useState(true);
-  const [priceFilter , setPriceFilter] = useState()
-  const [category , setCategory] = useState([newParams])
-  const [rating , setRating] = useState('')
-  const [priceShort , setPriceShort] = useState()
+  const [priceFilter , setPriceFilter] = useState(0)
+  const [category , setCategory] = useState(newParams ? [newParams] : [])
+  const [rating , setRating] = useState(0)
+  const [priceShort , setPriceShort] = useState('')
   if (rating ) {
     console.log(rating)
   }
   // if (data ) {
   //   console.log(data)
   // }
+function  handleClear () {
+   setPriceFilter(0);
+   setCategory([])
+   setRating[0]
+   setPriceShort('')
+}
   
   const catagoryData = data?.filter(
     (item, index, self) =>
@@ -85,7 +91,7 @@ if (data  ) {
            
             <div className='d-flex  justify-content-between'>
               <p className='fw-bold ' >filter</p>
-              <p className=' text-decoration-underline'>clear
+              <p onClick={handleClear} className=' text-decoration-underline'>clear
               </p>
             </div>
             <div><p className=''></p></div>
@@ -136,7 +142,7 @@ if (data  ) {
             <div>
 
               <label htmlFor="" className='fw-bold'>category</label>
-              <div>{catagoryData?.map(n => <div key={n?._id}><input type="checkbox" onClick={handleCategory} name="Category" id={n?._id} value={n?.category.productCategory} /> <label htmlFor={n?._id}>{n?.category.productCategory}</label></div>)}</div>
+              <div>{catagoryData?.map(n => <div key={n?._id}><input type="checkbox" checked={category.includes(n?.category.productCategory)}  onChange={handleCategory} name="Category" id={n?._id} value={n?.category.productCategory} /> <label htmlFor={n?._id}>{n?.category.productCategory}</label></div>)}</div>
 
             </div>
 
@@ -205,7 +211,8 @@ if (data  ) {
               {!loading && data?.length === 0 && <p>No products found</p>}
 
               {filter?.map((product) => (
-                <div className="col-md-4 col-lg-3" key={product._id}>
+                <div className="col-md-4 col-lg-3" key={product._id} >
+                  <Link to = {`/Detail/${product._id}`} >
                   <div className="card h-100 border-0 shadow-sm">
                     {/* Product Image */}
                     <div className="position-relative">
@@ -230,6 +237,7 @@ if (data  ) {
                     <div className="card-body text-center">
                       <h6 className="card-title">{product.productName}</h6>
                       <p className="fw-bold">₹ {product.productPrice}</p>
+                      <p className="fw-bold">rating : {product.productRating}</p>
 
                       <button
                         className="btn  w-100 text-light" style={{ backgroundColor: "#9c9c9cff" }}
@@ -239,8 +247,11 @@ if (data  ) {
                       </button>
                     </div>
                   </div>
+              </Link>
                 </div>
-              ))}
+              )
+              
+              )}
             </div>
           </div>
 
