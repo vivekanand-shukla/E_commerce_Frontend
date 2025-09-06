@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import { useFetch } from "../customHooks/useFetch"
 import{ Link, useParams } from "react-router-dom"
+import {useMainUrl} from '../customHooks/useMainUrl'
+import ProductCard from '../components/ProductCard'
 function filterAll(priceFilter, category, rating, data) {
   return data.filter(d => {
     const priceMatch = priceFilter ? d.productPrice <= Number(priceFilter) : true;
@@ -16,8 +18,8 @@ function filterAll(priceFilter, category, rating, data) {
 
 
 const ProductListining = () => {
+  const { mainUrl } = useMainUrl()
 
-  const mainUrl = `https://e-commerce-app-backend-seven-sand.vercel.app`
   const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
   const paramsCategory =  useParams()
@@ -36,7 +38,7 @@ const ProductListining = () => {
 function  handleClear () {
    setPriceFilter(0);
    setCategory([])
-   setRating[0]
+   setRating(0)
    setPriceShort('')
 }
   
@@ -70,12 +72,17 @@ if (data  ) {
     }
     setFilter(b)
   } 
-  if(filter){
-    console.log("this is filter " ,filter )
-  }
+  
+    
+  
 
 
-  }, [priceFilter , category ,rating ,data ,priceShort])
+  }, [priceFilter , category ,rating ,data ,priceShort ])
+
+useEffect(() => {
+  console.log("this is filter", filter);
+}, [filter]);
+ 
   
   return (
     <div>
@@ -189,7 +196,7 @@ if (data  ) {
           ☰  
         </button></div>
         </div> 
-        <div className='w-75  px-0 mx-0' style={{ width: "85%"}}>
+        <div className='w-75  px-0 mx-0 mt-4' style={{ width: "85%"}}>
           {/* //card section   */}
 
           <div className="container-fluid"   >
@@ -211,44 +218,7 @@ if (data  ) {
               {!loading && data?.length === 0 && <p>No products found</p>}
 
               {filter?.map((product) => (
-                <div className="col-md-4 col-lg-3" key={product._id} >
-                  <Link to = {`/Detail/${product._id}`} >
-                  <div className="card h-100 border-0 shadow-sm">
-                    {/* Product Image */}
-                    <div className="position-relative">
-                      <img
-                        src={product.productImage}
-                        alt={product.productName}
-                        className="card-img-top"
-                        style={{ height: "250px", objectFit: "cover", borderRadius: "5px" }}
-                      />
-                      {/* Wishlist Button (Heart Icon) */}
-                      <button
-                        className="btn btn-light position-absolute top-0 end-0 m-2 rounded-circle d-flex justify-content-center align-items-center"
-                        style={{ width: "36px", height: "36px" }}
-                        onClick={() => console.log("Add to wishlist", product._id)}
-                      >
-                        <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>&#9825;</span>
-                      </button>
-
-                    </div>
-
-                    {/* Product Details */}
-                    <div className="card-body text-center">
-                      <h6 className="card-title">{product.productName}</h6>
-                      <p className="fw-bold">₹ {product.productPrice}</p>
-                      <p className="fw-bold">rating : {product.productRating}</p>
-
-                      <button
-                        className="btn  w-100 text-light" style={{ backgroundColor: "#9c9c9cff" }}
-                        onClick={() => console.log("Add to Cart", product._id)}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
-              </Link>
-                </div>
+                <ProductCard product={product} key={product._id}/>
               )
               
               )}

@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { createBrowserRouter ,RouterProvider } from 'react-router-dom';
 import ProductListining from "./pages/ProductListining.jsx"
 import ProductDetail from './pages/ProductDetail.jsx';
+import Cart from './pages/Cart.jsx';
 const routes = createBrowserRouter([
   {
     path: "/",          
@@ -18,7 +19,11 @@ const routes = createBrowserRouter([
   {
     path: "/Detail/:id",
     element: <ProductDetail /> 
-  }
+  },
+  {
+    path: "/cart",
+    element: <Cart /> 
+  },
 ])
 
 createRoot(document.getElementById('root')).render(

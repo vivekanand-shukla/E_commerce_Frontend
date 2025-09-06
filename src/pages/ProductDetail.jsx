@@ -2,12 +2,12 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useFetch } from "../customHooks/useFetch";
-
+import {useMainUrl} from '../customHooks/useMainUrl'
 const ProductDetail = () => {
-    const mainUrl = `https://e-commerce-app-backend-seven-sand.vercel.app`;
+   
+    const    {mainUrl}                        = useMainUrl()
     const productsUrl = `/api/products`;
     const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET");
-
     const { id } = useParams();
 
 
@@ -60,7 +60,7 @@ const ProductDetail = () => {
                         {/* Price */}
                         <h3 className="fw-bold text-dark">
                             ₹{selectedProduct.productPrice}
-                            <span className="text-secondary ms-3 fs-5 text-decoration-line-through"> ₹ {(selectedProduct.productPrice + ((selectedProduct.offOnProduct * selectedProduct.productPrice) / 100)).toFixed(2)}</span>
+                            <span className="text-secondary ms-3 fs-5 text-decoration-line-through"> ₹ {(Number(selectedProduct.productPrice) + Number(((selectedProduct.offOnProduct /100 ) * selectedProduct.productPrice))).toFixed(1)}</span>
                         </h3>
                         <h5> {selectedProduct.offOnProduct && (
                             <span className="text-secondary ms-3">

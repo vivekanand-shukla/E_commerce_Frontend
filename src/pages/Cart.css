@@ -1,0 +1,149 @@
+.cart-page {
+  background: #f8f8f8;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.cart-heading {
+  text-align: center;
+  font-weight: 600;
+  margin: 30px 0;
+}
+
+.cart-container {
+  max-width: 80%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.cart-left {
+  display: flex;
+  width: 65%;
+}
+
+.cart-left img {
+  width: 200px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 5px;
+  background: #f3f3f3;
+}
+
+.cart-info {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cart-info h5 {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.offer {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.price {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.cut-price {
+  text-decoration: line-through;
+  font-size: 1rem;
+  color: #888;
+  margin-left: 10px;
+}
+
+.qty-box {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.qty-box button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  background: #fff;
+  font-weight: bold;
+  margin: 0 8px;
+  cursor: pointer;
+}
+
+.qty-value {
+  font-weight: 600;
+}
+
+.remove-btn,
+.wishlist-btn {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.remove-btn {
+  background: #000;
+  color: #fff;
+  border: none;
+}
+
+.wishlist-btn {
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+.cart-right {
+  width: 30%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  background: #fff;
+}
+
+.cart-right h6 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.price-row.discount {
+  color: green;
+}
+
+.price-row.total {
+  font-weight: bold;
+}
+
+.save-text {
+  color: green;
+  font-size: 0.85rem;
+}
+
+.place-order {
+  width: 100%;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}

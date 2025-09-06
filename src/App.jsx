@@ -1,43 +1,62 @@
-import { useState } from 'react'
-import Navbar from './components/Navbar'
-import { useFetch } from "./customHooks/useFetch"
-import CategoryCard from "./components/CategoryCard"
-import {Link} from "react-router-dom"
 
+import Navbar from './components/Navbar'
+import { useFetch  } from "./customHooks/useFetch"
+import CategoryCard from "./components/CategoryCard"
+import { useState ,useEffect } from 'react'
+import {useMainUrl} from './customHooks/useMainUrl'
 function App() {
-  const mainUrl = `https://e-commerce-app-backend-seven-sand.vercel.app`
+  const { mainUrl } = useMainUrl()
+
+ 
   const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
+  // if(mainUrl){
+
+  //   console.log(mainUrl)
+  // }
 
   if (data) {
     console.log(data)
   }
 
-  const catagoryData = data?.filter(
-    (item, index, self) =>
-      index === self.findIndex(
-        (t) => t.category.productCategory === item.category.productCategory
-      )
-  );
-  console.log(catagoryData)
 
-  const newArrivel = []
-  if (catagoryData) {
-    newArrivel.push(catagoryData[0])
-    newArrivel.push(catagoryData[1])
+  
+  
+  
+  
+  // console.log(catagoryData)
+
+const [catagoryData, setCatagoryData] = useState([]);
+const [newArrivel, setNewArrivel] = useState([]);
+
+useEffect(() => {
+  if (data) {
+    const uniqueCategories = data.filter(
+      (item, index, self) =>
+        index === self.findIndex(
+          (t) => t.category.productCategory === item.category.productCategory
+        )
+    );
+    setCatagoryData(uniqueCategories);
+    setNewArrivel(uniqueCategories.slice(0, 2));
   }
+}, [data]);
+
+
+
+
 
   return (
     <>
-     <Link to={"/products"}>to product page</Link> 
         <Navbar className="w-100" />  
+ 
        <div  style={{ backgroundColor: "#f9f9f9" }}>
         <div  className='container' >
           <div className="row container my-5" >
             {catagoryData &&
               catagoryData.map((i) => (
                 <div className="col-md-3 my-4" key={i._id}>
-                <Link to={`/products/${i.category.productCategory}`}> <CategoryCard e={i} /></Link> 
+                 <CategoryCard e={i} />
                 </div>
               ))}
           </div>
@@ -54,8 +73,8 @@ function App() {
 
    <div className='container  my-5'>
           <div className=" row   ">
-            {newArrivel.map((n) => (
-              <div className="col-md-6  p-4 " key={n._id}>
+            {newArrivel?.map((n) => (
+              <div className="col-md-6  p-4 " key={n?._id}>
                 <div
                   className="py-5 h-100 w-100 d-flex container"
                   style={{
@@ -64,8 +83,8 @@ function App() {
                   <div className='h-75 w-25 ' 
                                      > 
                     <img 
-                      src={n.productImage}
-                      alt={n.category.productCategory}
+                      src={n?.productImage}
+                      alt={n?.category.productCategory}
                    style={{ width: "100px",  height: "115px", objectFit: "cover"  }} 
                     className='img-fluid' />
                   </div> 
@@ -74,10 +93,10 @@ function App() {
                   <div className='px-2'>
                     <p  className='mb-5'>NEW ARRIVALS</p>
                     <h5 >
-                      {n.category.productCategory}
+                      {n?.category.productCategory}
                     </h5>
                     <p>
-                      {n.productDiscription}
+                      {n?.productDiscription}
                     </p>
                   </div>
                 </div>

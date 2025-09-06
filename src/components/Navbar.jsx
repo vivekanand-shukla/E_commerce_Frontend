@@ -1,8 +1,9 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-
-const Navbar = () => {
+import { Link } from 'react-router-dom'
+const Navbar = (p) => {
   return (
+    <div >
     <div className="container py-2 " style={{ position: "fixed", top: "0" , zIndex: "5", backgroundColor:"white", width:"100%"}}>
       <div className="d-flex flex-wrap justify-content-between align-items-center">
         
@@ -39,21 +40,23 @@ const Navbar = () => {
             </span>
           </div>
 
-       
-          <div className="position-relative d-flex align-items-center">
+       <Link className="text-light" to={`/cart`}>
+          <div className="position-relative d-flex align-items-center" >
             <span style={{ fontSize: "23px", color: "gray" }}>
               &#128722;
             </span>
-            <span
+            <span 
               className="badge position-absolute bg-danger rounded-circle"
               style={{ top: "-12px", right: "-10px" }}
             >
-              2
+              {p.noOfCartItem}
             </span>
-            <span className="">Cart</span>
+             <span >Cart</span> 
           </div>
+           </Link>
         </div>
       </div>
+    </div>
     </div>
   )
 }
