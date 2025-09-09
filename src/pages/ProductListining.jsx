@@ -1,10 +1,12 @@
 import './ProductListining.css'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState ,useContext} from 'react'
 import Navbar from '../components/Navbar'
 import { useFetch } from "../customHooks/useFetch"
 import{ Link, useParams } from "react-router-dom"
 import {useMainUrl} from '../customHooks/useMainUrl'
 import ProductCard from '../components/ProductCard'
+import { allContext } from '../context/context'
+
 function filterAll(priceFilter, category, rating, data) {
   return data.filter(d => {
     const priceMatch = priceFilter ? d.productPrice <= Number(priceFilter) : true;
@@ -16,9 +18,13 @@ function filterAll(priceFilter, category, rating, data) {
 
 
 
-
+function searchFilter(data ,search){
+  return data.filter( d=>  d.productName.toLowerCase().includes(search.toLowerCase()) || d.category.productCategory.toLowerCase().includes(search.toLowerCase()))
+}
 const ProductListining = () => {
   const { mainUrl } = useMainUrl()
+ const {search} = useContext(allContext)
+ console.log(search)
 
   const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
@@ -29,6 +35,7 @@ const ProductListining = () => {
   const [category , setCategory] = useState(newParams ? [newParams] : [])
   const [rating , setRating] = useState(0)
   const [priceShort , setPriceShort] = useState('')
+ 
   if (rating ) {
     console.log(rating)
   }
@@ -79,14 +86,16 @@ if (data  ) {
 
   }, [priceFilter , category ,rating ,data ,priceShort ])
 
-useEffect(() => {
-  console.log("this is filter", filter);
-}, [filter]);
- 
-  
+
+let selectedSearch=[]
+if(search.length > 0 && data){
+ selectedSearch=  searchFilter(data ,search)
+
+}
+
   return (
     <div>
-      < Navbar className="w-100" />
+      < Navbar className="w-100" products={filter}   />
 
       <div className='mainContainer w-100 d-flex py-2 d-flex flex-wrap' >
        
@@ -114,7 +123,7 @@ useEffect(() => {
               id="priceRange" onChange={(e)=> setPriceFilter(e.target.value)}
             />
 
-            <style>
+             <style>
               {`
 .custom-range::-webkit-slider-runnable-track {
   background: #9c9c9cff;
@@ -144,8 +153,8 @@ useEffect(() => {
   width: 16px;
   cursor: pointer;
 }
-`}
-            </style>
+`} 
+             </style> 
             <div>
 
               <label htmlFor="" className='fw-bold'>category</label>
@@ -216,12 +225,18 @@ useEffect(() => {
               {loading && <p>Loading products...</p>}
               {error && <p className="text-danger">Failed to load products</p>}
               {!loading && data?.length === 0 && <p>No products found</p>}
-
-              {filter?.map((product) => (
+           
+              {search.length==0 && filter?.map((product) => (
                 <ProductCard product={product} key={product._id}/>
               )
               
               )}
+              {selectedSearch.length>0 && selectedSearch?.map((product) => (
+                <ProductCard product={product} key={product._id}/>
+              )
+              
+              )}
+              {search.length>0  &&selectedSearch.length==0 && <p className='p-5'>no item found</p> }
             </div>
           </div>
 

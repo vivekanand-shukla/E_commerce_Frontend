@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useContext} from "react";
 import Navbar from "../components/Navbar";
 import { useMainUrl } from "../customHooks/useMainUrl";
 import { useFetch } from "../customHooks/useFetch";
 import CartCard from "../components/CartCard";
+import { allContext } from "../context/context";
 
 const Cart = () => {
   const { mainUrl } = useMainUrl();
@@ -11,7 +12,7 @@ const Cart = () => {
 
   const [cartData, setCartData] = useState([]);
 
-
+  const {search}= useContext(allContext)
 
 
 
@@ -35,6 +36,12 @@ const Cart = () => {
       setCartData(data.filter((d) => d.isAddedToCart === true));
     }
   }, [data]);
+const filteredCartData =
+  search.trim().length > 0
+    ? cartData.filter((item) =>
+        item.productName.toLowerCase().includes(search.toLowerCase())
+      )
+    : cartData;
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -50,11 +57,12 @@ const Cart = () => {
         {cartData.length === 0 ? (
           <p className="text-center">No items in cart</p>
         ) : (
-          cartData.map((item) => {
+          filteredCartData.map((item) => {
           return  <CartCard item={item}  key={item._id} mainUrl={mainUrl}/>
           
           })
         )}
+            {search.length>0  &&filteredCartData.length==0 && <p className='p-5'>no item found</p> }
       </div>
     </div>
   );

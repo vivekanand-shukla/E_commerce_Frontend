@@ -2,8 +2,10 @@
 import Navbar from './components/Navbar'
 import { useFetch  } from "./customHooks/useFetch"
 import CategoryCard from "./components/CategoryCard"
-import { useState ,useEffect } from 'react'
+import { useState ,useEffect ,useContext } from 'react'
 import {useMainUrl} from './customHooks/useMainUrl'
+import { allContext } from './context/context'
+ 
 function App() {
   const { mainUrl } = useMainUrl()
 
@@ -19,7 +21,7 @@ function App() {
     console.log(data)
   }
 
-
+const {search}= useContext(allContext)
   
   
   
@@ -43,9 +45,16 @@ useEffect(() => {
 }, [data]);
 
 
+function searchFilter(data ,search){
+  return data.filter( d=>   d.category.productCategory.toLowerCase().includes(search.toLowerCase()))
+}
 
-
-
+let selectedSearch=[]
+if(search.length > 0 && data){
+ selectedSearch=  searchFilter(catagoryData ,search)
+ console.log(selectedSearch)
+}
+const renderData = search.length >0 ?selectedSearch:catagoryData
   return (
     <>
         <Navbar className="w-100" />  
@@ -53,12 +62,16 @@ useEffect(() => {
        <div  style={{ backgroundColor: "#f9f9f9" }}>
         <div  className='container' >
           <div className="row container my-5" >
-            {catagoryData &&
-              catagoryData.map((i) => (
+            { 
+              renderData.length>0&& renderData.map((i) => (
                 <div className="col-md-3 my-4" key={i._id}>
                  <CategoryCard e={i} />
                 </div>
               ))}
+
+            {selectedSearch.length ==0 && search.length>0 && <p className='my-5'>no category found</p>}
+
+              
           </div>
       
           <div className="my-4  container">

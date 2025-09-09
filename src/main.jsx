@@ -1,33 +1,38 @@
-import { StrictMode } from 'react'
+import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { createBrowserRouter ,RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProductListining from "./pages/ProductListining.jsx"
 import ProductDetail from './pages/ProductDetail.jsx';
 import Cart from './pages/Cart.jsx';
+import WishList from './pages/WishList.jsx';
+import UserProfile from './pages/UserProfile.jsx';
+import { allContext } from './context/context.jsx';
+
+// Router define karein
 const routes = createBrowserRouter([
-  {
-    path: "/",          
-    element: <App />,   
-    
-  },
-  {
-    path: "/products/:cat",
-    element: <ProductListining /> 
-  },
-  {
-    path: "/Detail/:id",
-    element: <ProductDetail /> 
-  },
-  {
-    path: "/cart",
-    element: <Cart /> 
-  },
+  { path: "/", element: <App /> },
+  { path: "/products/:cat", element: <ProductListining /> },
+  { path: "/Detail/:id", element: <ProductDetail /> },
+  { path: "/cart", element: <Cart /> },
+  { path: "/wishlist", element: <WishList /> },
+  { path: "/user", element: <UserProfile /> }
 ])
+
+// ✅ Wrapper component banaya
+function Root() {
+  const [search, setSearch] = useState("")
+
+  return (
+    <allContext.Provider value={{ search, setSearch }}>
+      <RouterProvider router={routes} />
+    </allContext.Provider>
+  )
+}
 
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
-    <RouterProvider router={routes} />
-  // {/* </StrictMode>, */}
+  <Root />
+  // </StrictMode>
 )

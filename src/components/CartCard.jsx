@@ -20,6 +20,26 @@ const [quantity, setQuantity] = useState(1);
   }
 
 
+  
+     async function handleMoveToWishList(e) {
+        try {
+            const response = await fetch(mainUrl + `/api/products/update/${e}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isAddedToWishList: true ,isAddedToCart: false   }),
+            });
+
+            const resData = await response.json();
+            console.log("API Response:", resData);
+            console.log("hii");
+
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    }
+
+
+
 
 
      console.log(item)
@@ -104,7 +124,7 @@ const [quantity, setQuantity] = useState(1);
                           </button>
                           <button
                             className="btn btn-outline-secondary w-100"
-                            style={{ borderRadius: "2px" }}
+                            style={{ borderRadius: "2px" }} onClick={()=>handleMoveToWishList(item._id)}
                           >
                             Move to Wishlist
                           </button>

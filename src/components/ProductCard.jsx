@@ -22,6 +22,29 @@ const ProductCard = ({ product }) => {
     }
   }
 
+
+  
+
+
+
+     async function handleWishList(e, value) {
+        try {
+            const response = await fetch(mainUrl + `/api/products/update/${e}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isAddedToWishList: value }),
+            });
+
+            const resData = await response.json();
+            console.log("API Response:", resData);
+            console.log("hii");
+
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    }
+
+
   return (
     <div className="col-md-4 col-lg-3">
       <div className="card h-100 border-0 shadow-sm">
@@ -33,7 +56,7 @@ const ProductCard = ({ product }) => {
             style={{ height: "250px", objectFit: "cover", borderRadius: "5px" }}
           />
 
-          <button
+          {/* <button
             className="btn btn-light position-absolute top-0 end-0 m-2 rounded-circle d-flex justify-content-center align-items-center"
             style={{ width: "36px", height: "36px" }}
             onClick={() => console.log("Add to wishlist", product._id)}
@@ -41,7 +64,29 @@ const ProductCard = ({ product }) => {
             <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
               &#9825;
             </span>
-          </button>
+          </button> */}
+
+
+             <button
+                                    className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
+                                    style={{
+                                        width: "36px",
+                                        height: "36px",
+                                        top: "10px",
+                                        right: "20px",
+                                    }}
+                                    onClick={() => product?.isAddedToWishList ? handleWishList(product?._id, false) : handleWishList(product?._id, true)}
+                                >
+                                    {product?.isAddedToWishList ? (
+                                        <span style={{ fontSize: "1.6rem", color: "red" }}>
+                                            &#10084;
+                                        </span>
+                                    ) : (
+                                        <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
+                                            &#9825;
+                                        </span>
+                                    )}
+                                </button>
         </div>
 
         <div className="card-body text-center">

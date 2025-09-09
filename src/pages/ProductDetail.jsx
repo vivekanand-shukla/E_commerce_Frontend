@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useFetch } from "../customHooks/useFetch";
-import {useMainUrl} from '../customHooks/useMainUrl'
+import { useMainUrl } from '../customHooks/useMainUrl'
+import { Link } from "react-router-dom";
+
 const ProductDetail = () => {
-   
-    const    {mainUrl}                        = useMainUrl()
+
+    const { mainUrl } = useMainUrl()
     const productsUrl = `/api/products`;
     const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET");
     const { id } = useParams();
@@ -20,9 +22,49 @@ const ProductDetail = () => {
         //     &&  p._id !== selectedProduct._id
     );
 
+    async function handleAddToCart(e) {
+        try {
+            const response = await fetch(mainUrl + `/api/products/update/${e}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isAddedToCart: true }),
+            });
+
+            const resData = await response.json();
+            console.log("API Response:", resData);
+            console.log("hii");
+
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    }
+    async function handleWishList(e, value) {
+        try {
+            const response = await fetch(mainUrl + `/api/products/update/${e}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isAddedToWishList: value }),
+            });
+
+            const resData = await response.json();
+            console.log("API Response:", resData);
+            console.log("hii");
+
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    }
+
+
+
+
     if (loading) return <p className="text-center mt-5">Loading product details...</p>;
     if (error) return <p className="text-danger text-center mt-5">Failed to load product</p>;
     if (!selectedProduct) return <p className="text-center mt-5">Product not found</p>;
+
+
+
+
 
     return (
         <div>
@@ -32,7 +74,7 @@ const ProductDetail = () => {
             <div className="container my-5">
                 <div className="row g-4 my-5">
 
-                    <div className="col-md-5 text-center ">
+                    <div className="col-md-5 text-center position-relative ">
 
                         <img
                             src={selectedProduct.productImage}
@@ -40,10 +82,52 @@ const ProductDetail = () => {
                             className="img-fluid shadow "
                             style={{ maxHeight: "450px", objectFit: "contain", borderRadius: "2px", width: "60%", }}
                         />
+                        <button
+                            className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
+                            style={{
+                                width: "36px",
+                                height: "36px",
+                                top: "10px",
+                                right: "140px",
+                            }}
+                            onClick={() => selectedProduct.isAddedToWishList ? handleWishList(selectedProduct._id, false) : handleWishList(selectedProduct._id, true)}
+                        >
+                            {selectedProduct.isAddedToWishList ? (
+                                <span style={{ fontSize: "1.6rem", color: "red" }}>
+                                    &#10084;
+                                </span>
+                            ) : (
+                                <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
+                                    &#9825;
+                                </span>
+                            )}
+                        </button>
+
+
+
+
                         {/* Buttons */}
                         <div className="d-flex flex-column my-3 mt-2 align-items-center" >
                             <button className="btn btn-primary  my-2 " style={{ width: "60%", borderRadius: "2px" }}>Buy Now</button>
-                            <button className="btn text-light  " style={{ width: "60%", backgroundColor: "#898b8dff", borderRadius: "2px" }}>Add to Cart</button>
+                            {/* <button className="btn text-light  " style={{ width: "60%", backgroundColor: "#898b8dff", borderRadius: "2px" }}>Add to Cart</button> */}
+
+                            {selectedProduct?.isAddedToCart ? (
+                                <button
+                                    className="btn btn-primary text-light"
+                                    style={{ width: "60%", borderRadius: "2px" }}
+                                >
+                                    <Link className="text-light" to={`/cart`}> go to Cart</Link>
+
+                                </button>
+                            ) : (
+                                <button
+                                    className="btn text-light  "
+                                    style={{ width: "60%", backgroundColor: "#898b8dff", borderRadius: "2px" }}
+                                    onClick={() => handleAddToCart(selectedProduct._id)}
+                                >
+                                    Add to Cart
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -60,7 +144,7 @@ const ProductDetail = () => {
                         {/* Price */}
                         <h3 className="fw-bold text-dark">
                             ₹{selectedProduct.productPrice}
-                            <span className="text-secondary ms-3 fs-5 text-decoration-line-through"> ₹ {(Number(selectedProduct.productPrice) + Number(((selectedProduct.offOnProduct /100 ) * selectedProduct.productPrice))).toFixed(1)}</span>
+                            <span className="text-secondary ms-3 fs-5 text-decoration-line-through"> ₹ {(Number(selectedProduct.productPrice) + Number(((selectedProduct.offOnProduct / 100) * selectedProduct.productPrice))).toFixed(1)}</span>
                         </h3>
                         <h5> {selectedProduct.offOnProduct && (
                             <span className="text-secondary ms-3">
@@ -140,12 +224,58 @@ const ProductDetail = () => {
                                     className="card-img-top"
                                     style={{ height: "200px", objectFit: "cover" }}
                                 />
+
+
+                                <button
+                                    className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
+                                    style={{
+                                        width: "36px",
+                                        height: "36px",
+                                        top: "10px",
+                                        right: "20px",
+                                    }}
+                                    onClick={() => product?.isAddedToWishList ? handleWishList(product?._id, false) : handleWishList(product?._id, true)}
+                                >
+                                    {product?.isAddedToWishList ? (
+                                        <span style={{ fontSize: "1.6rem", color: "red" }}>
+                                            &#10084;
+                                        </span>
+                                    ) : (
+                                        <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
+                                            &#9825;
+                                        </span>
+                                    )}
+                                </button>
+
                                 <div className="card-body text-center">
                                     <h6 className="card-title">{product.productName}</h6>
                                     <p className="fw-bold">₹{product.productPrice}</p>
-                                    <button className="btn text-light  btn-sm w-100" style={{ backgroundColor: "#898b8dff", borderRadius: "2px" }}>
+                                    {/* <button className="btn text-light  btn-sm w-100" style={{ backgroundColor: "#898b8dff", borderRadius: "2px" }}>
                                         Add to Cart
-                                    </button>
+                                    </button> */}
+                                    {product?.isAddedToCart ? (
+                                        <button
+                                            className="btn btn-primary w-100 text-light"
+
+                                        >
+                                            <Link className="text-light" to={`/cart`}> go to Cart</Link>
+
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="btn w-100 text-light"
+                                            style={{ backgroundColor: "#9c9c9cff" }}
+                                            onClick={() => handleAddToCart(product._id)}
+                                        >
+                                            Add to Cart
+                                        </button>
+                                    )}
+
+
+
+
+
+
                                 </div>
                             </div>
                         </div>
