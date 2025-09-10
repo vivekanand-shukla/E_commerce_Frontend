@@ -23,9 +23,10 @@ const routes = createBrowserRouter([
 // ✅ Wrapper component banaya
 function Root() {
   const [search, setSearch] = useState("")
+  const [cart ,setCart] = useState([])
 
   return (
-    <allContext.Provider value={{ search, setSearch }}>
+    <allContext.Provider value={{ search, setSearch , cart ,setCart }}>
       <RouterProvider router={routes} />
     </allContext.Provider>
   )

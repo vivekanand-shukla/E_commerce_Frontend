@@ -14,24 +14,7 @@ const Cart = () => {
 
   const {search}= useContext(allContext)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  useEffect(() => {
+ useEffect(() => {
     if (data) {
       setCartData(data.filter((d) => d.isAddedToCart === true));
     }

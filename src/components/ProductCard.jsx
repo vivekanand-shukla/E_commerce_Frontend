@@ -1,10 +1,10 @@
-import React from "react";
+import {React , useContext } from "react";
 import { Link } from "react-router-dom";
 import { useMainUrl } from "../customHooks/useMainUrl";
-
+import { allContext } from '../context/context'
 const ProductCard = ({ product }) => {
   const { mainUrl } = useMainUrl();
-
+ const {setCart}= useContext(allContext)
   async function handleAddToCart(e) {
     try {
       const response = await fetch(mainUrl + `/api/products/update/${e}`, {
@@ -16,6 +16,15 @@ const ProductCard = ({ product }) => {
       const resData = await response.json();
       console.log("API Response:", resData);
       console.log("hii");
+
+ 
+
+    setCart(prev =>[...prev , resData]) 
+
+
+
+
+
 
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -38,6 +47,7 @@ const ProductCard = ({ product }) => {
             const resData = await response.json();
             console.log("API Response:", resData);
             console.log("hii");
+                setCart(prev =>[...prev , resData]) 
 
         } catch (error) {
             console.error("Error adding to cart:", error);
