@@ -49,7 +49,7 @@ const Navbar = (p) => {
               className="badge position-absolute bg-danger rounded-circle"
               style={{ top: "-5px", right: "-10px" }}
             >
-              2
+              { p.totalWishlistItem} 
             </span>
           </div>
 </Link>

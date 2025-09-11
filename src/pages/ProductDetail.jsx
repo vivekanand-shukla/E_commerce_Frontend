@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useFetch } from "../customHooks/useFetch";
 import { useMainUrl } from '../customHooks/useMainUrl'
 import { Link } from "react-router-dom";
-
+import { allContext } from "../context/context";
 const ProductDetail = () => {
 
     const { mainUrl } = useMainUrl()
@@ -12,17 +12,59 @@ const ProductDetail = () => {
     const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET");
     const { id } = useParams();
 
+    const [selectedProduct, setSelectedProduct] = useState()
 
-    const selectedProduct = data?.find((d) => d._id === id);
+    // useEffect(() => {
+    //   if (data) {
+    //     const found = data.find((d) => d._id === id);
+    //     if (found) {
+    //       // deep copy of product (avoid reference sharing)
+    //       setSelectedProduct({ ...found });
+    //     }
+    //   }
+    // }, [data, id]);
 
-    const relatedProducts = data?.filter(
-        (p) =>
-            p.category.productCategory === selectedProduct?.category.productCategory
 
-        //     &&  p._id !== selectedProduct._id
-    );
 
-    async function handleAddToCart(e) {
+
+
+    const [relatedProducts, setRelatedProducts] = useState([])
+
+
+
+    //   useEffect(() => {
+    //     if (data && selectedProduct) {
+    //       setRelatedProducts(
+    //         data.filter(
+    //           (p) =>
+    //             p?.category?.productCategory ===
+    //               selectedProduct?.category?.productCategory 
+    //           &&  p._id !== selectedProduct._id
+    //         )
+    //       );
+    //     }
+    //   }, [data, selectedProduct]);
+
+
+    useEffect(() => {
+        if (data && id) {
+            const found = data.find((d) => d._id === id);
+            if (found) setSelectedProduct({ ...found });
+
+            // ✅ Related products ek hi bar set karo
+            setRelatedProducts(
+                data.filter(
+                    (p) =>
+                        p?._id !== id &&
+                        p?.category?.productCategory === found?.category?.productCategory
+                )
+            );
+        }
+    }, [data, id]);
+
+
+
+    async function handleAddToCart(e, a = 0) {
         try {
             const response = await fetch(mainUrl + `/api/products/update/${e}`, {
                 method: "POST",
@@ -34,11 +76,26 @@ const ProductDetail = () => {
             console.log("API Response:", resData);
             console.log("hii");
 
+
+
+            if (a == 1) {
+
+
+
+                setSelectedProduct((prev) =>
+                    prev?._id === e ? { ...prev, isAddedToCart: true } : prev
+                );
+            } else if (a == 0) {
+                setRelatedProducts(prev => prev?.map(p => p?._id === e ? { ...p, isAddedToCart: true } : p))
+            }
+
+
+
         } catch (error) {
             console.error("Error adding to cart:", error);
         }
     }
-    async function handleWishList(e, value) {
+    async function handleWishList(e, value, a = 0) {
         try {
             const response = await fetch(mainUrl + `/api/products/update/${e}`, {
                 method: "POST",
@@ -50,11 +107,22 @@ const ProductDetail = () => {
             console.log("API Response:", resData);
             console.log("hii");
 
+            if (a == 1) {
+
+                setSelectedProduct((prev) =>
+                    prev?._id === e ? { ...prev, isAddedToWishList: value } : prev
+                );
+
+            } else if (a == 0) {
+                setRelatedProducts(prev => prev?.map(p => p?._id === e ? { ...p, isAddedToWishList: value } : p))
+            }
+
+
         } catch (error) {
             console.error("Error adding to cart:", error);
         }
     }
-
+    const { totalCartItem, totalWishlistItem } = useContext(allContext)
 
 
 
@@ -68,7 +136,7 @@ const ProductDetail = () => {
 
     return (
         <div>
-            <Navbar />
+            <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
 
 
             <div className="container my-5">
@@ -90,7 +158,7 @@ const ProductDetail = () => {
                                 top: "10px",
                                 right: "140px",
                             }}
-                            onClick={() => selectedProduct.isAddedToWishList ? handleWishList(selectedProduct._id, false) : handleWishList(selectedProduct._id, true)}
+                            onClick={() => selectedProduct.isAddedToWishList ? handleWishList(selectedProduct._id, false, 1) : handleWishList(selectedProduct._id, true, 1)}
                         >
                             {selectedProduct.isAddedToWishList ? (
                                 <span style={{ fontSize: "1.6rem", color: "red" }}>
@@ -109,21 +177,21 @@ const ProductDetail = () => {
                         {/* Buttons */}
                         <div className="d-flex flex-column my-3 mt-2 align-items-center" >
                             <button className="btn btn-primary  my-2 " style={{ width: "60%", borderRadius: "2px" }}>Buy Now</button>
-                            {/* <button className="btn text-light  " style={{ width: "60%", backgroundColor: "#898b8dff", borderRadius: "2px" }}>Add to Cart</button> */}
 
                             {selectedProduct?.isAddedToCart ? (
-                                <button
+                                <Link
+                                    to="/cart"
                                     className="btn btn-primary text-light"
-                                    style={{ width: "60%", borderRadius: "2px" }}
+                                    style={{ width: "60%", borderRadius: "2px", textDecoration: "none" }}
                                 >
-                                    <Link className="text-light" to={`/cart`}> go to Cart</Link>
+                                    Go to Cart
+                                </Link>
 
-                                </button>
                             ) : (
                                 <button
                                     className="btn text-light  "
                                     style={{ width: "60%", backgroundColor: "#898b8dff", borderRadius: "2px" }}
-                                    onClick={() => handleAddToCart(selectedProduct._id)}
+                                    onClick={() => handleAddToCart(selectedProduct._id, 1)}
                                 >
                                     Add to Cart
                                 </button>
@@ -133,20 +201,20 @@ const ProductDetail = () => {
 
 
                     <div className="col-md-7">
-                        <h4 className="fw-bold text-dark">{selectedProduct.productName}</h4>
-                        <p className="text-muted">{selectedProduct.productDiscription}</p>
+                        <h4 className="fw-bold text-dark">{selectedProduct?.productName}</h4>
+                        <p className="text-muted">{selectedProduct?.productDiscription}</p>
 
 
                         <div className="mb-2">
-                            {selectedProduct.productRating}
+                            {selectedProduct?.productRating}
                         </div>
 
                         {/* Price */}
                         <h3 className="fw-bold text-dark">
-                            ₹{selectedProduct.productPrice}
-                            <span className="text-secondary ms-3 fs-5 text-decoration-line-through"> ₹ {(Number(selectedProduct.productPrice) + Number(((selectedProduct.offOnProduct / 100) * selectedProduct.productPrice))).toFixed(1)}</span>
+                            ₹{selectedProduct?.productPrice}
+                            <span className="text-secondary ms-3 fs-5 text-decoration-line-through"> ₹ {(Number(selectedProduct?.productPrice) + Number(((selectedProduct.offOnProduct / 100) * selectedProduct.productPrice))).toFixed(1)}</span>
                         </h3>
-                        <h5> {selectedProduct.offOnProduct && (
+                        <h5> {selectedProduct?.offOnProduct && (
                             <span className="text-secondary ms-3">
                                 {selectedProduct.offOnProduct}% off
                             </span>
@@ -254,13 +322,14 @@ const ProductDetail = () => {
                                         Add to Cart
                                     </button> */}
                                     {product?.isAddedToCart ? (
-                                        <button
+                                        <Link
+                                            to="/cart"
                                             className="btn btn-primary w-100 text-light"
-
+                                            style={{ textDecoration: "none" }}
                                         >
-                                            <Link className="text-light" to={`/cart`}> go to Cart</Link>
+                                            Go to Cart
+                                        </Link>
 
-                                        </button>
                                     ) : (
                                         <button
                                             className="btn w-100 text-light"

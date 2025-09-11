@@ -21,7 +21,7 @@ function App() {
     console.log(data)
   }
 
-const {search}= useContext(allContext)
+const {search ,totalCartItem, totalWishlistItem}= useContext(allContext)
   
   
   
@@ -57,7 +57,7 @@ if(search.length > 0 && data){
 const renderData = search.length >0 ?selectedSearch:catagoryData
   return (
     <>
-        <Navbar className="w-100" />  
+        <Navbar className="w-100" noOfCartItem ={totalCartItem}  totalWishlistItem={totalWishlistItem}/>  
  
        <div  style={{ backgroundColor: "#f9f9f9" }}>
         <div  className='container' >

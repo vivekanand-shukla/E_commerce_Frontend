@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
-const CartCard = ({item ,mainUrl}) => {
+const CartCard = ({item ,mainUrl ,setCartData}) => {
 const [quantity, setQuantity] = useState(1);
  async function handleRemoveToCart(e) {
     try {
@@ -13,7 +13,8 @@ const [quantity, setQuantity] = useState(1);
       const resData = await response.json();
       console.log("API Response:", resData);
       console.log("hii");
-
+      
+   setCartData(prev => prev.filter(p => p._id !== e));
     } catch (error) {
       console.error("Error removing to cart:", error);
     }
@@ -32,6 +33,9 @@ const [quantity, setQuantity] = useState(1);
             const resData = await response.json();
             console.log("API Response:", resData);
             console.log("hii");
+
+            setCartData(prev => prev.filter(p => p._id !== e));
+
 
         } catch (error) {
             console.error("Error adding to cart:", error);

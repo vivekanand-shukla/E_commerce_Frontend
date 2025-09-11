@@ -10,15 +10,22 @@ const Cart = () => {
   const productsUrl = `/api/products`;
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET");
 
-  const [cartData, setCartData] = useState([]);
+  const [cartData, setCartData ] = useState([]);
 
-  const {search}= useContext(allContext)
+  const {search , settotalCartItem ,totalCartItem, totalWishlistItem} = useContext(allContext)
 
+
+
+
+    useEffect(() => {
+    settotalCartItem(cartData.length);
+  }, [cartData, settotalCartItem]);
  useEffect(() => {
     if (data) {
       setCartData(data.filter((d) => d.isAddedToCart === true));
     }
   }, [data]);
+
 const filteredCartData =
   search.trim().length > 0
     ? cartData.filter((item) =>
@@ -31,7 +38,7 @@ const filteredCartData =
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
-      <Navbar  noOfCartItem ={cartData.length}/>
+      <Navbar  noOfCartItem ={totalCartItem} totalWishlistItem={totalWishlistItem}/>
       <div className="container " style={{ paddingTop: "5%" }}>
         <h5 className="fw-bold text-center my-4">
           MY CART ({cartData.length})
@@ -41,7 +48,7 @@ const filteredCartData =
           <p className="text-center">No items in cart</p>
         ) : (
           filteredCartData.map((item) => {
-          return  <CartCard item={item}  key={item._id} mainUrl={mainUrl}/>
+          return  <CartCard item={item}  key={item._id} mainUrl={mainUrl} setCartData={setCartData}/>
           
           })
         )}

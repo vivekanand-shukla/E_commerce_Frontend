@@ -6,21 +6,21 @@ import { allContext } from '../context/context';
 
 const WishList = () => {
     const [wishlistProducts ,setwishlistProducts] = useState([])
-    const {search} = useContext(allContext)
     const { mainUrl } = useMainUrl();
     const productsUrl = `/api/products`;
     const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET");
-
-
-
-
-      useEffect(() => {
-  if (data) {
-    setwishlistProducts(data.filter(product => product.isAddedToWishList));
-  }
-}, [data]);
+    
+    const {search ,totalCartItem ,totalWishlistItem ,settotalWishlistItem} = useContext(allContext)
+    
+    
     
 
+    useEffect(() => {
+        if (data) {
+            setwishlistProducts(data.filter(product => product.isAddedToWishList));
+        }
+    }, [data]);
+    
     // Filter only wishlist products
 
  
@@ -82,6 +82,13 @@ const WishList = () => {
   const filteredWishlist = wishlistProducts.filter((product) =>
     product.productName.toLowerCase().includes(search.toLowerCase())
   );
+
+
+useEffect(() => {
+  settotalWishlistItem(filteredWishlist.length);
+}, [filteredWishlist ,search]);
+
+
 if (loading) return <div className="text-center mt-5">Loading Wishlist...</div>;
     if (error) return <div className="text-center text-danger mt-5">Failed to load wishlist</div>;
 
@@ -90,10 +97,9 @@ if (loading) return <div className="text-center mt-5">Loading Wishlist...</div>;
 //     product.productName.toLowerCase().includes(search.toLowerCase())
 //   );
 // }
-
     return (
         <div>
-            <Navbar />
+            <Navbar noOfCartItem ={totalCartItem} totalWishlistItem={totalWishlistItem} />
             <div className="container" style={{ paddingTop: "5%" }}>
                 <h4 className="fw-bold mb-4">My Wishlist</h4>
 

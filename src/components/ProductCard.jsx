@@ -1,10 +1,12 @@
-import {React , useContext } from "react";
+import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMainUrl } from "../customHooks/useMainUrl";
-import { allContext } from '../context/context'
-const ProductCard = ({ product }) => {
+
+const ProductCard = ({ product, setProducts }) => {
   const { mainUrl } = useMainUrl();
- const {setCart}= useContext(allContext)
+
+
+
   async function handleAddToCart(e) {
     try {
       const response = await fetch(mainUrl + `/api/products/update/${e}`, {
@@ -14,15 +16,19 @@ const ProductCard = ({ product }) => {
       });
 
       const resData = await response.json();
-      console.log("API Response:", resData);
+      console.log("API Response:", resData.updatedData);
       console.log("hii");
 
- 
-
-    setCart(prev =>[...prev , resData]) 
 
 
 
+
+
+      setProducts(prevProducts =>
+        prevProducts.map(p =>
+          p._id === e ? { ...p, isAddedToCart: true } : p
+        )
+      );
 
 
 
@@ -32,27 +38,33 @@ const ProductCard = ({ product }) => {
   }
 
 
-  
 
 
 
-     async function handleWishList(e, value) {
-        try {
-            const response = await fetch(mainUrl + `/api/products/update/${e}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ isAddedToWishList: value }),
-            });
 
-            const resData = await response.json();
-            console.log("API Response:", resData);
-            console.log("hii");
-                setCart(prev =>[...prev , resData]) 
+  async function handleWishList(e, value) {
+    try {
+      const response = await fetch(mainUrl + `/api/products/update/${e}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isAddedToWishList: value }),
+      });
 
-        } catch (error) {
-            console.error("Error adding to cart:", error);
-        }
+      const resData = await response.json();
+      console.log("API Response:", resData);
+      console.log("hii");
+
+
+      setProducts(prevProducts =>
+        prevProducts.map(p =>
+          p._id === e ? { ...p, isAddedToWishList: value } : p
+        )
+      );
+
+    } catch (error) {
+      console.error("Error adding to cart:", error);
     }
+  }
 
 
   return (
@@ -77,26 +89,26 @@ const ProductCard = ({ product }) => {
           </button> */}
 
 
-             <button
-                                    className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
-                                    style={{
-                                        width: "36px",
-                                        height: "36px",
-                                        top: "10px",
-                                        right: "20px",
-                                    }}
-                                    onClick={() => product?.isAddedToWishList ? handleWishList(product?._id, false) : handleWishList(product?._id, true)}
-                                >
-                                    {product?.isAddedToWishList ? (
-                                        <span style={{ fontSize: "1.6rem", color: "red" }}>
-                                            &#10084;
-                                        </span>
-                                    ) : (
-                                        <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
-                                            &#9825;
-                                        </span>
-                                    )}
-                                </button>
+          <button
+            className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
+            style={{
+              width: "36px",
+              height: "36px",
+              top: "10px",
+              right: "20px",
+            }}
+            onClick={() => product?.isAddedToWishList ? handleWishList(product?._id, false) : handleWishList(product?._id, true)}
+          >
+            {product?.isAddedToWishList ? (
+              <span style={{ fontSize: "1.6rem", color: "red" }}>
+                &#10084;
+              </span>
+            ) : (
+              <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
+                &#9825;
+              </span>
+            )}
+          </button>
         </div>
 
         <div className="card-body text-center">
@@ -104,16 +116,17 @@ const ProductCard = ({ product }) => {
           <p className="fw-bold">₹ {product.productPrice}</p>
           <p className="fw-bold">rating : {product.productRating}</p>
 
-          <Link to={`/Detail/${product._id}`}>more detail</Link>
+          <Link style={{ textDecoration: "none" }} to={`/Detail/${product._id}`}>more detail</Link>
 
           {product.isAddedToCart ? (
-            <button
+            <Link
+              to="/cart"
               className="btn btn-primary w-100 text-light"
-              
+              style={{ textDecoration: "none" }}
             >
-              <Link className="text-light" to={`/cart`}> go to Cart</Link>
-              
-            </button>
+              Go to Cart
+            </Link>
+
           ) : (
             <button
               className="btn w-100 text-light"

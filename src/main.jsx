@@ -24,9 +24,11 @@ const routes = createBrowserRouter([
 function Root() {
   const [search, setSearch] = useState("")
   const [cart ,setCart] = useState([])
+  const [totalCartItem ,settotalCartItem] = useState(0)
+  const [totalWishlistItem ,settotalWishlistItem] = useState(0)
 
   return (
-    <allContext.Provider value={{ search, setSearch , cart ,setCart }}>
+    <allContext.Provider value={{ search, setSearch , cart ,setCart , totalCartItem  ,settotalCartItem ,totalWishlistItem ,settotalWishlistItem}}>
       <RouterProvider router={routes} />
     </allContext.Provider>
   )

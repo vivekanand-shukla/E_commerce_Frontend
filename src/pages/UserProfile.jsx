@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState  , useContext} from "react";
 import Navbar from "../components/Navbar";
-
+import { allContext } from "../context/context";
 const UserProfile = () => {
   // Static user details
   const user = {
@@ -60,10 +60,11 @@ const UserProfile = () => {
   const handleChangeDeliveryAddress = () => {
     setSelectedAddress(selectedOption);
   };
+  const{totalCartItem , totalWishlistItem} = useContext(allContext)
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "130vh" }}>
-      <Navbar />
+      <Navbar  noOfCartItem ={totalCartItem} totalWishlistItem={totalWishlistItem}/>
       <div className="container" style={{ paddingTop: "6%" }}>
         <h3 className="fw-bold text-center mb-4">My Profile</h3>
 

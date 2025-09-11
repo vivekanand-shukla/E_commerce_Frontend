@@ -23,8 +23,8 @@ function searchFilter(data, search) {
 }
 const ProductListining = () => {
   const { mainUrl } = useMainUrl()
-  const { search ,cart ,setCart} = useContext(allContext)
-
+  const { search , cart , setCart ,totalCartItem , totalWishlistItem} = useContext(allContext)
+ 
 
   const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
@@ -35,6 +35,7 @@ const ProductListining = () => {
   const [category, setCategory] = useState(newParams ? [newParams] : [])
   const [rating, setRating] = useState(0)
   const [priceShort, setPriceShort] = useState('')
+
 
   if (rating) {
     console.log(rating)
@@ -64,12 +65,19 @@ const ProductListining = () => {
       setCategory(c => c.filter(e => e != value))
     }
   }
+
+  const [products, setProducts] = useState([]);
+
+useEffect(() => {
+  if (data) setProducts(data); // local copy
+}, [data]);
+
   const [filter, setFilter] = useState([])
   useEffect(() => {
 
-    if (data) {
+    if (products) {
 
-      const a = filterAll(priceFilter, category, rating, data)
+      const a = filterAll(priceFilter, category, rating, products)
       let b = [...a]
       if (priceShort == "lowToHigh") {
         b = b.sort((c, d) => c.productPrice - d.productPrice);
@@ -84,21 +92,27 @@ const ProductListining = () => {
 
 
 
-  }, [priceFilter, category, rating, data, priceShort])
+  }, [priceFilter, category, rating, data, priceShort ,products])
+
+
 
 
   let selectedSearch = []
   if (search.length > 0 && data) {
-    selectedSearch = searchFilter(data, search)
+    selectedSearch = searchFilter(products , search)
 
   }
   useEffect(()=>{
 
     setCart(search.length > 0 ?selectedSearch && selectedSearch: filter) 
   }, [search, selectedSearch, filter, setCart])
+
+
+
+
   return (
     <div>
-      < Navbar className="w-100" products={filter} />
+      < Navbar className="w-100" products={filter} noOfCartItem ={totalCartItem}  totalWishlistItem={totalWishlistItem}/>
 
       <div className='mainContainer w-100 d-flex py-2 d-flex flex-wrap' >
 
@@ -230,7 +244,7 @@ const ProductListining = () => {
               {!loading && data?.length === 0 && <p>No products found</p>}
 
               { cart?.map((product) => (
-                <ProductCard product={product} key={product._id} />
+                <ProductCard product={product} key={product._id}  setProducts={setProducts}  products={products}/>
               )
 
               )}
