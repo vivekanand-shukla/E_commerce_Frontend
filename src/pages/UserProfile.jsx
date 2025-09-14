@@ -1,106 +1,152 @@
-import React, { useState  , useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Navbar from "../components/Navbar";
 import { allContext } from "../context/context";
+import { useMainUrl } from "../customHooks/useMainUrl";
+
 const UserProfile = () => {
-  // Static user details
-  const user = {
-    name: "Vivek Kumar",
-    email: "vivek@example.com",
-    phone: "+91 9876543210",
+  const { mainUrl } = useMainUrl(); // tumhari custom hook jo base URL de raha hai
+  const { totalCartItem, totalWishlistItem } = useContext(allContext);
+
+  // Backend se aane wale addresses
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(""); 
+  const [selectedOption, setSelectedOption] = useState("");
+  const [newAddress, setNewAddress] = useState("");
+  const [editId, setEditId] = useState(null); // address id for update
+
+  // Fetch all addresses on mount
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const fetchAddresses = async () => {
+    try {
+      const res = await fetch(`${mainUrl}/api/address`);
+      const data = await res.json();
+      setAddresses(data);
+      if (data.length > 0) {
+        setSelectedAddress(data[0].choosedAddressForOrder);
+        setSelectedOption(data[0].address);
+      }
+    } catch (err) {
+      console.error("Error fetching addresses:", err);
+    }
   };
 
-  // Address state (array)
-  const [addresses, setAddresses] = useState([
-    "123, MG Road, New Delhi",
-    "Flat 402, Green Valley, Mumbai",
-  ]);
-
-  const [selectedAddress, setSelectedAddress] = useState(addresses[0]); // delivery address
-  const [selectedOption, setSelectedOption] = useState(addresses[0]); // dropdown temporary value
-  const [newAddress, setNewAddress] = useState("");
-  const [editIndex, setEditIndex] = useState(null);
-
-  // Order History (Static)
-  const orderHistory = [
-    { id: "ORD123", date: "2025-09-01", items: 3, total: 2999, status: "Delivered" },
-    { id: "ORD124", date: "2025-08-20", items: 1, total: 1299, status: "Shipped" },
-  ];
-
   // Add or Update Address
-  const handleAddOrUpdateAddress = () => {
+
+
+  
+  const handleAddOrUpdateAddress = async () => {
     if (!newAddress.trim()) return;
 
-    if (editIndex !== null) {
-      const updated = [...addresses];
-      updated[editIndex] = newAddress;
-      setAddresses(updated);
-      setEditIndex(null);
-    } else {
-      setAddresses([...addresses, newAddress]);
+    try {
+      if (editId) {
+        // UPDATE request
+        const res = await fetch(`${mainUrl}/address/${editId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address: newAddress }),
+        });
+        await res.json();
+        setEditId(null);
+      } else {
+        // CREATE request
+        await fetch(`${mainUrl}/api/address`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address: newAddress }),
+        });
+      }
+
+      setNewAddress("");
+      fetchAddresses(); // Refresh list
+    } catch (err) {
+      console.error("Error adding/updating address:", err);
     }
-    setNewAddress("");
   };
 
   // Delete Address
-  const handleDeleteAddress = (index) => {
-    const updated = addresses.filter((_, i) => i !== index);
-    setAddresses(updated);
-    if (selectedAddress === addresses[index]) {
-      setSelectedAddress(updated[0] || "");
+  const handleDeleteAddress = async (id) => {
+    try {
+      await fetch(`${mainUrl}/api/address/${id}`, {
+        method: "DELETE",
+      });
+      fetchAddresses();
+    } catch (err) {
+      console.error("Error deleting address:", err);
     }
   };
 
   // Edit Address
-  const handleEditAddress = (index) => {
-    setNewAddress(addresses[index]);
-    setEditIndex(index);
+  const handleEditAddress = (addr) => {
+    setNewAddress(addr.address);
+    setEditId(addr._id);
   };
 
-  // Change delivery address (button click)
-  const handleChangeDeliveryAddress = () => {
-    setSelectedAddress(selectedOption);
-  };
-  const{totalCartItem , totalWishlistItem} = useContext(allContext)
+
+
+
+  // Change delivery address 
+const handleChangeDeliveryAddress = async () => {
+  if (!selectedOption) return;
+
+  try {
+    const res = await fetch(`${mainUrl}/api/choosedAdress`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newChoosedAddress: selectedOption }),
+    });
+
+    const data = await res.json();
+    console.log("Updated choosedAddressForOrder:", data);
+
+    setSelectedAddress(selectedOption); // UI update karo
+    if(data){
+
+      alert("Delivery address updated successfully!");
+    }
+  } catch (err) {
+    console.error("Error updating choosed address:", err);
+  }
+};
+
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "130vh" }}>
-      <Navbar  noOfCartItem ={totalCartItem} totalWishlistItem={totalWishlistItem}/>
+      <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
       <div className="container" style={{ paddingTop: "6%" }}>
         <h3 className="fw-bold text-center mb-4">My Profile</h3>
 
-        {/* User Info Card */}
-        <div
-          className="p-4 mb-4"
-          style={{ backgroundColor: "#fff" }}
-        >
+        <div className="p-4 mb-4" style={{ backgroundColor: "#fff" }}>
           <h5 className="fw-bold mb-3">Personal Details</h5>
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Phone:</strong> {user.phone}</p>
-          <p><strong>Delivery Address:</strong> {selectedAddress}</p>
+          <p><strong>Name:</strong> Vivek Kumar</p>
+          <p><strong>Email:</strong> vivek@example.com</p>
+          <p><strong>Phone:</strong> +91 9876543210</p>
+          <p><strong>Delivery Address:</strong> {selectedAddress || "No address selected"}</p>
 
-          {/* Address Section */}
+          {/* Address List */}
           <h6 className="fw-bold mt-4">Addresses</h6>
           <ul className="list-group mb-3">
             {addresses.length === 0 ? (
               <p className="text-muted">No addresses added yet.</p>
             ) : (
-              addresses.map((addr, index) => (
+              addresses.map((addr) => (
                 <li
-                  key={index}
+                  key={addr._id}
                   className="list-group-item d-flex justify-content-between align-items-center"
                 >
-                  {addr}
+                  {addr.address}
                   <div>
                     <button
                       className="btn btn-sm btn-outline-secondary me-2"
-                      onClick={() => handleEditAddress(index)}
+                      onClick={() => handleEditAddress(addr)}
                     >
                       ✏️
                     </button>
                     <button
                       className="btn btn-sm btn-outline-danger"
-                      onClick={() => handleDeleteAddress(index)}
+                      onClick={() => handleDeleteAddress(addr._id)}
                     >
                       🗑️
                     </button>
@@ -116,16 +162,19 @@ const UserProfile = () => {
               <label className="fw-semibold me-2">Change Delivery Address:</label>
               <select
                 className="form-select w-auto me-2"
-                value={selectedOption}
+                // value={selectedOption}
                 onChange={(e) => setSelectedOption(e.target.value)}
               >
-                {addresses.map((addr, i) => (
-                  <option key={i} value={addr}>
-                    {addr}
+                {addresses.map((addr) => (
+                  <option key={addr._id} value={addr.address}>
+                    {addr.address}
                   </option>
                 ))}
               </select>
-              <button className="btn btn-primary btn-sm" onClick={handleChangeDeliveryAddress}>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={handleChangeDeliveryAddress}
+              >
                 Set as Delivery Address
               </button>
             </div>
@@ -141,54 +190,10 @@ const UserProfile = () => {
               className="form-control me-2"
             />
             <button className="btn btn-primary" onClick={handleAddOrUpdateAddress}>
-              {editIndex !== null ? "Update" : "Add"}
+              {editId ? "Update" : "Add"}
             </button>
           </div>
         </div>
-
-        {/* Order History Card */}
-        {/* <div
-          className="p-4 "
-          style={{ backgroundColor: "#fff",  marginBottom:"40%" }}
-        >
-          <h5 className="fw-bold mb-3">Order History</h5>
-          {orderHistory.length === 0 ? (
-            <p className="text-muted">No orders placed yet.</p>
-          ) : (
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Date</th>
-                  <th>Items</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orderHistory.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.id}</td>
-                    <td>{order.date}</td>
-                    <td>{order.items}</td>
-                    <td>₹{order.total}</td>
-                    <td>
-                      <span
-                        className={`badge ${
-                          order.status === "Delivered"
-                            ? "bg-success"
-                            : "bg-warning text-dark"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div> */}
       </div>
     </div>
   );

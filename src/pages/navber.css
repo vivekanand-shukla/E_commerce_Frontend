@@ -1,0 +1,40 @@
+ 
+      
+      @media screen and (max-width: 1025px) {
+       .icon{
+       width:5%
+       }
+       
+      
+       .my-search{
+       width:15%
+       }
+       
+    }
+      @media screen and (max-width: 425px) {
+       .icon{
+       width:5%
+       }
+      .title{
+        font-size: 15px;
+      }
+
+       .my-search{
+       width:15%
+       }
+       .login{
+       width:35px;
+       height: 15px;
+       }
+    }
+      @media screen and (max-width: 425px) {
+       .icon{
+       width:5%
+       }
+      .title{
+        font-size: 5px;
+      }
+       .my-search{
+       width:13%
+       }
+    }

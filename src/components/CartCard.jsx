@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
-const CartCard = ({item ,mainUrl ,setCartData}) => {
+import { Link } from 'react-router-dom';
+const CartCard = ({item ,mainUrl ,setCartData ,cardOf}) => {
 const [quantity, setQuantity] = useState(1);
  async function handleRemoveToCart(e) {
     try {
@@ -120,6 +121,7 @@ const [quantity, setQuantity] = useState(1);
 
                         {/* ACTION BUTTONS */}
                         <div>
+                          
                           <button
                             className="btn btn-secondary w-100 mb-2"
                             style={{ borderRadius: "2px" }} onClick={()=>{handleRemoveToCart(item._id)}}
@@ -171,12 +173,18 @@ const [quantity, setQuantity] = useState(1);
                     <p className="" style={{ fontSize: "0.85rem" }}>
                       You will save ₹{(discount*quantity).toFixed(2)} on this order
                     </p>
-                    <button
+                    { item.isProductOrdered?<Link to={`/checkout/${item._id}`}
+                      className="btn btn-danger w-100 mt-2"
+                      style={{  color: "white" }}
+                    >
+                      Cancel Order
+                    </Link> :
+                    <Link to={`/checkout/${item._id}`}
                       className="btn w-100 mt-2"
                       style={{ backgroundColor: "#007bff", color: "white" }}
                     >
                       PLACE ORDER
-                    </button>
+                    </Link>}
                   </div>
                 </div>
               </div>

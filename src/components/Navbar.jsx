@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { Link } from 'react-router-dom'
 import { useContext } from 'react';
 import { allContext } from '../context/context';
- 
+//  import "../pages/navber.css"
 const Navbar = (p) => {
   const {setSearch } = useContext(allContext)
   function handleSearch( value){
@@ -14,19 +14,19 @@ const Navbar = (p) => {
 
 
   return (
-    <div >
+    <div style={{width:"100%",  height:"90%"}} >
 
-    <div className="container py-2 " style={{ position: "fixed", top: "0" , zIndex: "5", backgroundColor:"white", width:"100%"}}>
-      <div className="d-flex flex-wrap justify-content-between align-items-center">
+    <div className=" py-2 px-2" style={{ position: "fixed", top: "0" , zIndex: "5", backgroundColor:"white", width:"100%"}}>
+      <div className="d-flex  justify-content-between align-items-center w-100">
         
-      <Link className="text-light" to={`/`}>
-        <h5 className="text-secondary">MyShoppingSite</h5>
+      <Link className="text-light icon" to={`/`} style={{width:"20%"}}>
+        <h5 className="text-secondary title">MyShoppingSite</h5>
 </Link>
       
         <input
           type="text"
-          className="form-control w-50"
-          placeholder="🔍  Search by name and category"
+          className="form-control  my-search"
+          placeholder="🔍  Search by name and category" style={{width:"40%"}}
           onChange={(e)=>handleSearch(e.target.value) }
         />
 
@@ -34,8 +34,8 @@ const Navbar = (p) => {
         <div className="d-flex align-items-center gap-4">
         
           <button
-            className="text-light px-3 py-1"
-            style={{ backgroundColor: "gray", border: "none", borderRadius: "2px" }}
+            className="text-light login  px-2"
+            style={{ backgroundColor: "gray", border: "none", borderRadius: "2px" ,padding:"3px"  }}
           >
             Login
           </button>
@@ -64,7 +64,7 @@ const Navbar = (p) => {
             >
               {p.noOfCartItem}
             </span>
-             <span >Cart</span> 
+             <span className='text-dark' >Cart</span> 
           </div>
            </Link>
            <div className='user-profile'>
@@ -75,6 +75,9 @@ const Navbar = (p) => {
         </div>
       </div>
     </div>
+
+
+   <div style={{ paddingTop: "30px" }}></div>
     </div>
   )
 }

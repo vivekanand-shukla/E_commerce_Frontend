@@ -9,6 +9,7 @@ import Cart from './pages/Cart.jsx';
 import WishList from './pages/WishList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import { allContext } from './context/context.jsx';
+import CheckoutPage from './pages/CheckoutPage.jsx';
 
 // Router define karein
 const routes = createBrowserRouter([
@@ -17,7 +18,8 @@ const routes = createBrowserRouter([
   { path: "/Detail/:id", element: <ProductDetail /> },
   { path: "/cart", element: <Cart /> },
   { path: "/wishlist", element: <WishList /> },
-  { path: "/user", element: <UserProfile /> }
+  { path: "/user", element: <UserProfile /> },
+  { path: "/checkout/:id", element: <CheckoutPage /> }
 ])
 
 // ✅ Wrapper component banaya

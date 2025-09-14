@@ -57,7 +57,10 @@ if(search.length > 0 && data){
 const renderData = search.length >0 ?selectedSearch:catagoryData
   return (
     <>
-        <Navbar className="w-100" noOfCartItem ={totalCartItem}  totalWishlistItem={totalWishlistItem}/>  
+    <div className='w-100'>
+
+        <Navbar  noOfCartItem ={totalCartItem}  totalWishlistItem={totalWishlistItem}/>  
+    </div>
  
        <div  style={{ backgroundColor: "#f9f9f9" }}>
         <div  className='container' >
