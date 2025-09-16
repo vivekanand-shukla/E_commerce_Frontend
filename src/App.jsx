@@ -12,21 +12,15 @@ function App() {
  
   const productsUrl = `/api/products`
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET")
-  // if(mainUrl){
 
-  //   console.log(mainUrl)
-  // }
 
-  if (data) {
-    console.log(data)
-  }
 
 const {search ,totalCartItem, totalWishlistItem}= useContext(allContext)
   
   
   
   
-  // console.log(catagoryData)
+
 
 const [catagoryData, setCatagoryData] = useState([]);
 const [newArrivel, setNewArrivel] = useState([]);
@@ -52,7 +46,7 @@ function searchFilter(data ,search){
 let selectedSearch=[]
 if(search.length > 0 && data){
  selectedSearch=  searchFilter(catagoryData ,search)
- console.log(selectedSearch)
+
 }
 const renderData = search.length >0 ?selectedSearch:catagoryData
   return (

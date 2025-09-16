@@ -15,7 +15,7 @@ const Cart = () => {
 
   useEffect(() => {
     settotalCartItem(cartData.length);
-  }, [cartData, settotalCartItem]);
+  });
 
   useEffect(() => {
     if (data) {

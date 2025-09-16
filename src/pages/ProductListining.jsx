@@ -40,9 +40,7 @@ const ProductListining = () => {
   if (rating) {
     console.log(rating)
   }
-  // if (data ) {
-  //   console.log(data)
-  // }
+
   function handleClear() {
     setPriceFilter(0);
     setCategory([])
@@ -69,7 +67,7 @@ const ProductListining = () => {
   const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  if (data) setProducts(data); // local copy
+  if (data) setProducts(data); 
 }, [data]);
 
   const [filter, setFilter] = useState([])
@@ -92,7 +90,7 @@ useEffect(() => {
 
 
 
-  }, [priceFilter, category, rating, data, priceShort ,products])
+  }, [priceFilter, category, rating, data, priceShort , products])
 
 
 
@@ -105,7 +103,7 @@ useEffect(() => {
   useEffect(()=>{
 
     setCart(search.length > 0 ?selectedSearch && selectedSearch: filter) 
-  }, [search, selectedSearch, filter, setCart])
+  }, [search,  filter, ])
 
 
 
@@ -117,7 +115,7 @@ useEffect(() => {
       <div className='mainContainer w-100 d-flex py-2 d-flex flex-wrap' >
 
         <div style={{ width: "18%", height: "50%", background: "#f8f9fa", zIndex: 7 }}>
-          <div className={`sidebar ${isOpen ? "open" : "closed"}`} style={{ width: "15%", height: "50%", background: "#f8f9fa" }} >
+          <div className={`sidebar ${isOpen ? "open" : "closed"}`} >
 
 
             <div className='container' >
@@ -218,8 +216,8 @@ useEffect(() => {
 
             </div>
           </div>
-          <div><button className="btn my-btn btn-outline-secondary d-none" onClick={() => setIsOpen(!isOpen)}>
-            ☰
+          <div><button className="btn  btn-outline-secondary  toggle-btn" onClick={() => setIsOpen(!isOpen)}>
+            ☰ 
           </button></div>
         </div>
         <div className='w-75  px-0 mx-0 mt-4' style={{ width: "85%" }}>
@@ -248,11 +246,7 @@ useEffect(() => {
               )
 
               )}
-              {/* {selectedSearch.length > 0 && selectedSearch?.map((product) => (
-                <ProductCard product={product} key={product._id} />
-              )
-
-              )} */}
+            
               {search.length > 0 && selectedSearch.length == 0 && <p className='p-5'>no item found</p>}
             </div>
           </div>

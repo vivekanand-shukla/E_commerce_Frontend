@@ -56,7 +56,7 @@ const [quantity, setQuantity] = useState(1);
   return (
       <div
                
-                className="row mx-auto mb-4 g-5"
+                className="row mx-auto mb-4 g-5 a"
                 style={{ maxWidth: "90%" }}
               >
                 {/* LEFT BLOCK - Product Details */}
@@ -70,7 +70,7 @@ const [quantity, setQuantity] = useState(1);
 
                     }}
                   >
-                    <div className="d-flex ">
+                    <div className="d-flex  a">
                       <img
                         src={item.productImage}
                         alt={item.productName}
@@ -100,12 +100,14 @@ const [quantity, setQuantity] = useState(1);
                             {item.offOnProduct}% off
                           </p>
                           {/* QUANTITY COUNTER */}
-                          <div className="d-flex align-items-center my-3">
+                          <div className="d-flex align-items-center my-3 a">
                             <span className="me-2">Quantity:</span>
+                            <div>
+
                             <button  onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : prev))}
                               className="btn  btn-sm"
                               style={{ borderRadius: "50%", width: "30px", height: "30px", border: "0.2px solid gray" }}
-                            >
+                              >
                               -
                             </button>
                             <span className="mx-3 fw-bold  " style={{ border: "0.2px solid gray", borderRadius: "2px", padding: "2px" }}
@@ -113,9 +115,10 @@ const [quantity, setQuantity] = useState(1);
                             <button  onClick={() => setQuantity((prev) => prev + 1)}
                               className="btn  btn-sm"
                               style={{ borderRadius: "50%", width: "30px", height: "30px", border: "0.2px solid gray" }}
-                            >
+                              >
                               +
                             </button>
+                              </div>
                           </div>
                         </div>
 
@@ -123,13 +126,13 @@ const [quantity, setQuantity] = useState(1);
                         <div>
                           
                           <button
-                            className="btn btn-secondary w-100 mb-2"
+                            className="btn btn-secondary w-100 mb-2 b"
                             style={{ borderRadius: "2px" }} onClick={()=>{handleRemoveToCart(item._id)}}
                           >
                             Remove From Cart
                           </button>
                           <button
-                            className="btn btn-outline-secondary w-100"
+                            className="btn btn-outline-secondary w-100 b"
                             style={{ borderRadius: "2px" }} onClick={()=>handleMoveToWishList(item._id)}
                           >
                             Move to Wishlist
@@ -187,6 +190,54 @@ const [quantity, setQuantity] = useState(1);
                     </Link>}
                   </div>
                 </div>
+
+                <style>{`
+  @media (max-width: 400px) {
+    .a {
+      display: flex;
+      flex-direction: column; /* typo fix kiya column ka spelling */
+      gap: 1rem; /* thoda spacing upar niche blocks ke liye */
+    }
+    /* Buttons ko chhota karo */
+    .a button {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
+    /* Quantity display chhota karo */
+    .a span {
+      font-size: 0.8rem;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      margin-bottom: 1rem;
+    }
+      .b{
+      width:30px
+      }
+  }
+
+  @media (max-width: 360px) {
+    .a {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .a button {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.4rem;
+    }
+    .a span {
+      font-size: 0.75rem;
+    }
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+`}</style>
+
               </div>
   )
 }
