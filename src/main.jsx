@@ -10,7 +10,7 @@ import WishList from './pages/WishList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import { allContext } from './context/context.jsx';
 import CheckoutPage from './pages/CheckoutPage.jsx';
-
+import Navbar from './components/Navbar.jsx';
 // Router define karein
 const routes = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -19,10 +19,11 @@ const routes = createBrowserRouter([
   { path: "/cart", element: <Cart /> },
   { path: "/wishlist", element: <WishList /> },
   { path: "/user", element: <UserProfile /> },
-  { path: "/checkout/:id", element: <CheckoutPage /> }
+  { path: "/checkout/:id", element: <CheckoutPage /> },
+
 ])
 
-// ✅ Wrapper component banaya
+//  Wrapper component banaya
 function Root() {
   const [search, setSearch] = useState("")
   const [cart ,setCart] = useState([])
@@ -32,12 +33,10 @@ function Root() {
   return (
     <allContext.Provider value={{ search, setSearch , cart ,setCart , totalCartItem  ,settotalCartItem ,totalWishlistItem ,settotalWishlistItem}}>
       <RouterProvider router={routes} />
+     
     </allContext.Provider>
   )
 }
-
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
   <Root />
-  // </StrictMode>
-)
+ )

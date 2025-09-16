@@ -86,7 +86,7 @@ const WishList = () => {
 
 useEffect(() => {
   settotalWishlistItem(filteredWishlist.length);
-});
+},[settotalWishlistItem, filteredWishlist]);
 
 
 if (loading) return <div className="text-center mt-5">Loading Wishlist...</div>;

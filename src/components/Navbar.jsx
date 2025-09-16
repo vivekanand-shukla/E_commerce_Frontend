@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { allContext } from '../context/context'
 
 const Navbar = (p) => {
-  const { setSearch } = useContext(allContext)
+  const { setSearch ,totalWishlistItem ,totalCartItem } = useContext(allContext)
 
   function handleSearch(value) {
     setSearch(value)
@@ -36,7 +36,7 @@ const Navbar = (p) => {
               <div className="position-relative">
                 <span className="wishlist-icon text-secondary" style={{ fontSize:"35px"}}>&#9825;</span>
                 <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
-                  {p.totalWishlistItem}
+                  {totalWishlistItem}
                 </span>
               </div>
             </Link>
@@ -46,7 +46,7 @@ const Navbar = (p) => {
               <div className="position-relative d-flex align-items-center cart-section">
                 <span className="cart-icon text-secondary">&#128722;</span>
                 <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
-                  {p.noOfCartItem}
+                  {totalCartItem}
                 </span>
                 <span className="text-dark ms-1 cart-text">Cart</span>
               </div>
