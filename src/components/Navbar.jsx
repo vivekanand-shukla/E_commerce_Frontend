@@ -138,7 +138,7 @@ const Navbar = (p) => {
 }
 
        
-    
+          @media (min-width: 700px) {
             .brand-text {
               font-size: 1.2rem;
               max-width: none;

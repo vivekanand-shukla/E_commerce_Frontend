@@ -36,8 +36,8 @@ const WishList = () => {
             });
 
             const resData = await response.json();
-            console.log("API Response:", resData);
-            console.log("hii");
+            // console.log("API Response:", resData);
+            // console.log("hii");
 
             
                    setwishlistProducts((prev) =>
@@ -48,7 +48,7 @@ const WishList = () => {
 
    
         } catch (error) {
-            console.error("Error adding to cart:", error);
+            // console.error("Error adding to cart:", error);
         }
      }
 
@@ -64,15 +64,15 @@ const WishList = () => {
             });
 
             const resData = await response.json();
-            console.log("API Response:", resData);
-            console.log("hii");
+            // console.log("API Response:", resData);
+            // console.log("hii");
 
 
         setwishlistProducts((prev) =>
         prev.filter((product) => product._id !== e)
       );
         } catch (error) {
-            console.error("Error adding to cart:", error);
+            // console.error("Error adding to cart:", error);
         }
     }
 

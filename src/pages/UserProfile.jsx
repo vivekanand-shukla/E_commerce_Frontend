@@ -29,7 +29,7 @@ const UserProfile = () => {
         setSelectedOption(data[0].address);
       }
     } catch (err) {
-      console.error("Error fetching addresses:", err);
+      // console.error("Error fetching addresses:", err);
     }
   };
 
@@ -62,7 +62,7 @@ const UserProfile = () => {
       setNewAddress("");
       fetchAddresses(); // Refresh list
     } catch (err) {
-      console.error("Error adding/updating address:", err);
+      // console.error("Error adding/updating address:", err);
     }
   };
 
@@ -74,7 +74,7 @@ const UserProfile = () => {
       });
       fetchAddresses();
     } catch (err) {
-      console.error("Error deleting address:", err);
+      // console.error("Error deleting address:", err);
     }
   };
 
@@ -99,7 +99,7 @@ const handleChangeDeliveryAddress = async () => {
     });
 
     const data = await res.json();
-    console.log("Updated choosedAddressForOrder:", data);
+    // console.log("Updated choosedAddressForOrder:", data);
 
     setSelectedAddress(selectedOption); // UI update karo
     if(data){
@@ -107,7 +107,7 @@ const handleChangeDeliveryAddress = async () => {
       alert("Delivery address updated successfully!");
     }
   } catch (err) {
-    console.error("Error updating choosed address:", err);
+    // console.error("Error updating choosed address:", err);
   }
 };
 
@@ -123,7 +123,7 @@ const handleChangeDeliveryAddress = async () => {
           <p><strong>Name:</strong> Vivek Kumar</p>
           <p><strong>Email:</strong> vivek@example.com</p>
           <p><strong>Phone:</strong> +91 9876543210</p>
-          <p><strong>Delivery Address:</strong> {selectedAddress || "No address selected"}</p>
+          <p className="overflow-scroll w-75"><strong>Delivery Address:</strong   > <span className="overflow-scroll w-75">{selectedAddress || "No address selected"}</span></p>
 
           {/* Address List */}
           <h6 className="fw-bold mt-4">Addresses</h6>
@@ -134,9 +134,12 @@ const handleChangeDeliveryAddress = async () => {
               addresses.map((addr) => (
                 <li
                   key={addr._id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
+                  className="list-group-item d-flex justify-content-between align-items-center  w-100"
                 >
+                  <div className="overflow-scroll w-75">
+
                   {addr.address}
+                  </div>
                   <div>
                     <button
                       className="btn btn-sm btn-outline-secondary me-2"
@@ -161,13 +164,16 @@ const handleChangeDeliveryAddress = async () => {
             <div className="mb-3 d-flex align-items-center">
               <label className="fw-semibold me-2">Change Delivery Address:</label>
               <select
-                className="form-select w-auto me-2"
+                className="form-select w-auto me-2 "  size={3}
                 // value={selectedOption}
                 onChange={(e) => setSelectedOption(e.target.value)}
               >
                 {addresses.map((addr) => (
-                  <option key={addr._id} value={addr.address}>
+                  <option key={addr._id} value={addr.address}  >
+                    
+
                     {addr.address}
+              
                   </option>
                 ))}
               </select>

@@ -21,7 +21,7 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
       }
       alert(value ? "Order Placed ✅" : "Order Cancelled ❌");
     } catch (error) {
-      console.error("Error ordering:", error);
+      // console.error("Error ordering:", error);
     }
   }
 
@@ -31,10 +31,10 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
   const finalAmount = quantity * (price - discount + delivery);
 
   return (
-    <div className="row mx-auto mb-4 g-5" style={{ maxWidth: "90%" }}>
-      <div className="col-md-5">
+    <div className="row mx-auto mb-4 g-5 a" style={{ maxWidth: "90%", }}>
+      <div className="col-md-5 a">
         <div className="bg-white rounded shadow-sm p-3">
-          <div className="d-flex">
+          <div className="d-flex a ">
             <img
               src={item.productImage}
               alt={item.productName}
@@ -74,14 +74,14 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
 
               {!item.isProductOrdered ? (
                 <button
-                  className="btn btn-primary w-100"
+                  className="btn btn-primary w-75"
                   onClick={() => handleBuyNow(item._id, quantity, true)}
                 >
                   BUY NOW
                 </button>
               ) : (
                 <button
-                  className="btn btn-danger w-100"
+                  className="btn btn-danger w-75"
                   onClick={() => handleBuyNow(item._id, 1, false)}
                 >
                   Cancel Order
@@ -153,7 +153,24 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
     </p>
   </div>
 </div>
+     <style>{`
+          @media (max-width: 1024px) {
+              .a{
+           display: flex;
+      flex-direction: column;
+          }
+          @media (max-width: 360px) {
+           .a{
+           display: flex;
+      flex-direction: column;
+         
+           }
 
+
+          }
+
+`}
+      </style>
 
     </div>
   );

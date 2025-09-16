@@ -12,12 +12,12 @@ const [quantity, setQuantity] = useState(1);
       });
 
       const resData = await response.json();
-      console.log("API Response:", resData);
-      console.log("hii");
+      // console.log("API Response:", resData);
+      // console.log("hii");
       
    setCartData(prev => prev.filter(p => p._id !== e));
     } catch (error) {
-      console.error("Error removing to cart:", error);
+      // console.error("Error removing to cart:", error);
     }
   }
 
@@ -32,14 +32,14 @@ const [quantity, setQuantity] = useState(1);
             });
 
             const resData = await response.json();
-            console.log("API Response:", resData);
-            console.log("hii");
+            // console.log("API Response:", resData);
+            // console.log("hii");
 
             setCartData(prev => prev.filter(p => p._id !== e));
 
 
         } catch (error) {
-            console.error("Error adding to cart:", error);
+            // console.error("Error adding to cart:", error);
         }
     }
 
@@ -47,7 +47,7 @@ const [quantity, setQuantity] = useState(1);
 
 
 
-     console.log(item)
+    //  console.log(item)
              const price =(Number(item.productPrice) + Number((item.offOnProduct / 100) * item.productPrice))
             const discount = Number((item.offOnProduct / 100) * item.productPrice)
             const delivery = item.diliveryCharges;
@@ -74,7 +74,7 @@ const [quantity, setQuantity] = useState(1);
                       <img
                         src={item.productImage}
                         alt={item.productName}
-                        className=""
+                        className="img-fluid"
                         style={{
                           width: "200px",
                           height: "340px",
@@ -100,7 +100,7 @@ const [quantity, setQuantity] = useState(1);
                             {item.offOnProduct}% off
                           </p>
                           {/* QUANTITY COUNTER */}
-                          <div className="d-flex align-items-center my-3 a">
+                          <div className=" align-items-center my-3 a">
                             <span className="me-2">Quantity:</span>
                             <div>
 
@@ -123,17 +123,17 @@ const [quantity, setQuantity] = useState(1);
                         </div>
 
                         {/* ACTION BUTTONS */}
-                        <div>
+                        <div className=''>
                           
                           <button
-                            className="btn btn-secondary w-100 mb-2 b"
-                            style={{ borderRadius: "2px" }} onClick={()=>{handleRemoveToCart(item._id)}}
+                            className="btn btn-secondary mb-2  w-75"
+                            style={{ borderRadius: "2px", }} onClick={()=>{handleRemoveToCart(item._id)}}
                           >
                             Remove From Cart
                           </button>
                           <button
-                            className="btn btn-outline-secondary w-100 b"
-                            style={{ borderRadius: "2px" }} onClick={()=>handleMoveToWishList(item._id)}
+                            className="btn btn-outline-secondary  w-75 "
+                            style={{ borderRadius: "2px" ,}} onClick={()=>handleMoveToWishList(item._id)}
                           >
                             Move to Wishlist
                           </button>
@@ -214,7 +214,7 @@ const [quantity, setQuantity] = useState(1);
       margin-bottom: 1rem;
     }
       .b{
-      width:30px
+      width:50%
       }
   }
 
@@ -235,6 +235,9 @@ const [quantity, setQuantity] = useState(1);
       width: 100%;
       height: auto;
     }
+       .b{
+      width:50% 
+      }
   }
 `}</style>
 

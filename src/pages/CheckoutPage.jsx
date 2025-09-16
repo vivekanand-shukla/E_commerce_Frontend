@@ -26,7 +26,7 @@ const Checkout = () => {
       setOrderedProducts(data.filter((d) => d.isProductOrdered === true));
     }
       } catch (error) {
-        console.error("Error fetching data", error);
+        // console.error("Error fetching data", error);
       }
     };
     fetchData();
@@ -46,7 +46,8 @@ const Checkout = () => {
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
       <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
-      <div className="my-3">
+
+      <div className="my-5">
         {productToBuy && <CheckoutCard item={productToBuy} mainUrl={mainUrl} isBuyed={false} />}
       </div>
       <div className="container" style={{ paddingTop: "5%" }}>

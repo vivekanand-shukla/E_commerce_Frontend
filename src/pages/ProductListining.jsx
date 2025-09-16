@@ -38,7 +38,7 @@ const ProductListining = () => {
 
 
   if (rating) {
-    console.log(rating)
+   
   }
 
   function handleClear() {
@@ -54,7 +54,7 @@ const ProductListining = () => {
         (t) => t.category.productCategory === item.category.productCategory
       )
   );
-  // console.log()
+
   function handleCategory(e) {
     const { checked, value } = e.target
     if (checked) {

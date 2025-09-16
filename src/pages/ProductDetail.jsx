@@ -14,10 +14,10 @@ const ProductDetail = () => {
   const [selectedProduct, setSelectedProduct] = useState();
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-  // 🟢 Quantity state
+
   const [quantity, setQuantity] = useState(1);
 
-  // 🟢 Derived price states
+ 
   const [priceInfo, setPriceInfo] = useState({
     totalPrice: 0,
     originalPrice: 0,
@@ -50,7 +50,7 @@ const ProductDetail = () => {
     }
   }, [data, id]);
 
-  // 🟢 Recalculate price when quantity changes
+
   useEffect(() => {
     if (selectedProduct) {
       const discountPerItem =
@@ -75,7 +75,7 @@ const ProductDetail = () => {
       });
 
       const resData = await response.json();
-      console.log("API Response:", resData);
+      // console.log("API Response:", resData);
 
       if (a == 1) {
         setSelectedProduct((prev) =>
@@ -89,7 +89,7 @@ const ProductDetail = () => {
         );
       }
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      // console.error("Error adding to cart:", error);
     }
   }
 
@@ -102,7 +102,7 @@ const ProductDetail = () => {
       });
 
       const resData = await response.json();
-      console.log("API Response:", resData);
+      // console.log("API Response:", resData);
 
       if (a == 1) {
         setSelectedProduct((prev) =>
@@ -116,7 +116,7 @@ const ProductDetail = () => {
         );
       }
     } catch (error) {
-      console.error("Error adding to wishlist:", error);
+      // console.error("Error adding to wishlist:", error);
     }
   }
 
@@ -134,9 +134,11 @@ const ProductDetail = () => {
       />
 
       <div className="container my-5">
-        <div className="row g-4 my-5">
+        <div className="row g-4 my-5 a">
           {/* LEFT IMAGE SECTION */}
-          <div className="col-md-5 text-center position-relative ">
+          <div className="col-md-5 text-center position-relative">
+
+          <div  >
             <img
               src={selectedProduct.productImage}
               alt={selectedProduct.productName}
@@ -147,7 +149,7 @@ const ProductDetail = () => {
                 borderRadius: "2px",
                 width: "60%",
               }}
-            />
+              />
             {/* Wishlist Button */}
             <button
               className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
@@ -179,38 +181,39 @@ const ProductDetail = () => {
                 Buy Now
               </Link>
               :         <Link to={`/checkout/${selectedProduct._id}`}
-                className="btn btn-danger my-2"
-                style={{ width: "60%", borderRadius: "2px" }}
+              className="btn btn-danger my-2"
+              style={{ width: "60%", borderRadius: "2px" }}
               >
                 Cancel Order
               </Link>}
               {selectedProduct?.isAddedToCart ? (
                 <Link
-                  to="/cart"
-                  className="btn btn-primary text-light"
-                  style={{
-                    width: "60%",
-                    borderRadius: "2px",
-                    textDecoration: "none",
-                  }}
+                to="/cart"
+                className="btn btn-primary text-light"
+                style={{
+                  width: "60%",
+                  borderRadius: "2px",
+                  textDecoration: "none",
+                }}
                 >
                   Go to Cart
                 </Link>
               ) : (
                 <button
-                  className="btn text-light"
+                className="btn text-light"
                   style={{
                     width: "60%",
                     backgroundColor: "#898b8dff",
                     borderRadius: "2px",
                   }}
                   onClick={() => handleAddToCart(selectedProduct._id, 1)}
-                >
+                  >
                   Add to Cart
                 </button>
               )}
             </div>
           </div>
+              </div>
 
           {/* RIGHT DETAILS SECTION */}
           <div className="col-md-7">
@@ -294,7 +297,7 @@ const ProductDetail = () => {
         <h5 className="fw-bold mb-3">
           More items you may like in {selectedProduct.category.productCategory}
         </h5>
-        <div className="row g-3">
+        <div className="row g-3 a">
           {relatedProducts?.map((product) => (
             <div className="col-6 col-md-3" key={product._id}>
               <div className="card h-100 shadow-sm">
@@ -361,6 +364,22 @@ const ProductDetail = () => {
           )}
         </div>
       </div>
+      <style>{`
+          @media (min-width: 700px) {
+          
+          }
+          @media (max-width: 360px) {
+           .a{
+           display: flex;
+      flex-direction: column;
+         
+           }
+
+
+          }
+
+`}
+      </style>
     </div>
   );
 };
