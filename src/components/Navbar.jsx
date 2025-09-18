@@ -11,7 +11,7 @@ const Navbar = (p) => {
   }
 
   return (
-    <div className="w-100 h-100">
+    <div className=""  style={{ zIndex: 100, backgroundColor: "white", position: "relative" }}>
       <div className="py-2 px-2 position-fixed top-0 w-100 bg-white z-3">
         <div className="container d-flex justify-content-between align-items-center w-100 flex-nowrap">
           {/* Brand */}
@@ -35,9 +35,11 @@ const Navbar = (p) => {
             <Link className="text-decoration-none" to={`/wishlist`}>
               <div className="position-relative">
                 <span className="wishlist-icon text-secondary" style={{ fontSize:"35px"}}>&#9825;</span>
+                 {totalWishlistItem>0 ? 
                 <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
                   {totalWishlistItem}
                 </span>
+                 :""} 
               </div>
             </Link>
 
@@ -45,9 +47,11 @@ const Navbar = (p) => {
             <Link className="text-decoration-none" to={`/cart`}>
               <div className="position-relative d-flex align-items-center cart-section">
                 <span className="cart-icon text-secondary">&#128722;</span>
-                <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
+               {totalCartItem>0? 
+                 <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
                   {totalCartItem}
                 </span>
+                  :""} 
                 <span className="text-dark ms-1 cart-text">Cart</span>
               </div>
             </Link>

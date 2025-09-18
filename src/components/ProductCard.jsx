@@ -4,33 +4,33 @@ import { useMainUrl } from "../customHooks/useMainUrl";
 
 const ProductCard = ({ product, setProducts }) => {
   const { mainUrl } = useMainUrl();
-
-
+  const [size, setSize] = useState('');
+const [showSizeDropdown, setShowSizeDropdown] = useState(false);
 
   async function handleAddToCart(e) {
+  if (!size) {
+   
+    setShowSizeDropdown(true);
+    alert("Please select a size first");
+    return;
+  }
+   
+
     try {
       const response = await fetch(mainUrl + `/api/products/update/${e}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isAddedToCart: true }),
+        body: JSON.stringify({ isAddedToCart: true ,size }),
       });
 
       const resData = await response.json();
-      console.log("API Response:", resData.updatedData);
-      console.log("hii");
-
-
-
-
-
-
-      setProducts(prevProducts =>
+     setProducts(prevProducts =>
         prevProducts.map(p =>
           p._id === e ? { ...p, isAddedToCart: true } : p
         )
       );
 
-
+setShowSizeDropdown(false);
 
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -51,8 +51,8 @@ const ProductCard = ({ product, setProducts }) => {
       });
 
       const resData = await response.json();
-      console.log("API Response:", resData);
-      console.log("hii");
+      // console.log("API Response:", resData);
+    
 
 
       setProducts(prevProducts =>
@@ -69,6 +69,11 @@ const ProductCard = ({ product, setProducts }) => {
 
   return (
     <div className="col-md-4 col-lg-3">
+
+
+
+
+
       <div className="card h-100 border-0 shadow-sm">
         <div className="position-relative">
           <img
@@ -78,16 +83,7 @@ const ProductCard = ({ product, setProducts }) => {
             style={{ height: "250px", objectFit: "cover", borderRadius: "5px" }}
           />
 
-          {/* <button
-            className="btn btn-light position-absolute top-0 end-0 m-2 rounded-circle d-flex justify-content-center align-items-center"
-            style={{ width: "36px", height: "36px" }}
-            onClick={() => console.log("Add to wishlist", product._id)}
-          >
-            <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
-              &#9825;
-            </span>
-          </button> */}
-
+         
 
           <button
             className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
@@ -116,7 +112,7 @@ const ProductCard = ({ product, setProducts }) => {
           <p className="fw-bold">₹ {product.productPrice}</p>
           <p className="fw-bold">rating : {product.productRating}</p>
 
-          <Link style={{ textDecoration: "none" }} to={`/Detail/${product._id}`}>more detail</Link>
+          <Link style={{ textDecoration: "none" }} to={`/Detail/${product._id}`}>Details</Link>
 
           {product.isAddedToCart ? (
             <Link
@@ -137,7 +133,25 @@ const ProductCard = ({ product, setProducts }) => {
             </button>
           )}
         </div>
+
+        
+    {!product.isAddedToCart && showSizeDropdown  && <p>
+      <label htmlFor="size" className="form-label">Select Size:</label>
+      <select
+        id="size"
+        value={size}
+        onChange={(e) => setSize(e.target.value)} className="form-select"
+      >
+        <option value="">--Select--</option>
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+        <option value="XL">XL</option>
+        <option value="XXL">XXL</option>
+      </select> </p>}
       </div>
+
+      
     </div>
   );
 };

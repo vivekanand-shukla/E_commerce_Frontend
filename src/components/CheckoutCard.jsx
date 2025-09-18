@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
   const [quantity, setQuantity] = useState(1);
-
+  const [placed,setPlaced]= useState(0)
   async function handleBuyNow(id, qty, value) {
     try {
     const response=   await fetch(`${mainUrl}/api/products/update/${id}`, {
@@ -14,12 +14,19 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
       if(data){
         if(value == true){
             setOrderedProducts(prev =>[...prev ,data])
+            setPlaced(1)
         }else if(value === false){
             
             setOrderedProducts(prev =>prev.filter( p => p._id != data._id))
+            setPlaced(2)
         }
       }
-      alert(value ? "Order Placed ✅" : "Order Cancelled ❌");
+     
+
+  setTimeout(() => {
+   setPlaced(0);
+}, 3000)
+      
     } catch (error) {
       // console.error("Error ordering:", error);
     }
@@ -31,7 +38,17 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
   const finalAmount = quantity * (price - discount + delivery);
 
   return (
-    <div className="row mx-auto mb-4 g-5 a" style={{ maxWidth: "90%", }}>
+    <div>
+       { placed==1 &&  <div className="alert alert-success" role="alert">
+       order placed successfully
+</div>}
+{placed==2 &&
+<div className="alert alert-danger" role="alert">
+     order cancled
+</div>}
+    
+   <div className="row mx-auto mb-4 g-5 a" style={{ maxWidth: "90%", }}>
+     
       <div className="col-md-5 a">
         <div className="bg-white rounded shadow-sm p-3">
           <div className="d-flex a ">
@@ -77,7 +94,7 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
                   className="btn btn-primary w-75"
                   onClick={() => handleBuyNow(item._id, quantity, true)}
                 >
-                  BUY NOW
+                 checkout
                 </button>
               ) : (
                 <button
@@ -171,7 +188,7 @@ const CheckoutCard = ({ item, mainUrl  ,setOrderedProducts ,isBuyed}) => {
 
 `}
       </style>
-
+</div>
     </div>
   );
 };

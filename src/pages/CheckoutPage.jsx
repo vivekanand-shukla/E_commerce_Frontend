@@ -14,6 +14,35 @@ const Checkout = () => {
   const [productToBuy, setProductToBuy] = useState({});
   const [orderedProducts, setOrderedProducts] = useState([]);
   const { search, totalWishlistItem, totalCartItem } = useContext(allContext);
+  const [adress, setSelectedAddress] = useState('')
+//
+
+
+  
+        useEffect(() => {
+          fetchAddresses();
+        }, []);
+      
+        const fetchAddresses = async () => {
+          try {
+            const res = await fetch(`${mainUrl}/api/address`);
+            const data = await res.json();
+          
+            if (data.length > 0) {
+              setSelectedAddress(data[0].choosedAddressForOrder);
+              
+            }
+          } catch (err) {
+            // console.error("Error fetching addresses:", err);
+          }
+        };
+    
+//
+
+
+
+
+  
   
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +75,7 @@ const Checkout = () => {
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
       <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
-
+         <h3 className="pt-5 container">your current dilevery Address : {adress}</h3>
       <div className="my-5">
         {productToBuy && <CheckoutCard item={productToBuy} mainUrl={mainUrl} isBuyed={false} />}
       </div>

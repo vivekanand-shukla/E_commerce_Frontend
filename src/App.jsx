@@ -1,11 +1,10 @@
-
 import Navbar from './components/Navbar'
 import { useFetch  } from "./customHooks/useFetch"
 import CategoryCard from "./components/CategoryCard"
 import { useState ,useEffect ,useContext } from 'react'
 import {useMainUrl} from './customHooks/useMainUrl'
 import { allContext } from './context/context'
- 
+ import { Link } from 'react-router-dom'
 function App() {
   const { mainUrl } = useMainUrl()
 
@@ -51,12 +50,12 @@ if(search.length > 0 && data){
 const renderData = search.length >0 ?selectedSearch:catagoryData
   return (
     <>
-    <div className='w-100'>
+   
 
-        <Navbar  noOfCartItem ={totalCartItem}  totalWishlistItem={totalWishlistItem}/>  
-    </div>
+        <Navbar  />  
+
  
-       <div  style={{ backgroundColor: "#f9f9f9" }}>
+       <div  style={{ backgroundColor: "#ffff" }}>
         <div  className='container' >
           <div className="row container my-5" >
             { 
@@ -85,17 +84,18 @@ const renderData = search.length >0 ?selectedSearch:catagoryData
           <div className=" row   ">
             {newArrivel?.map((n) => (
               <div className="col-md-6  p-4 " key={n?._id}>
+                <Link  className="text-decoration-none text-reset " to={`/products/${n.category.productCategory}`}>
                 <div
                   className="py-5 h-100 w-100 d-flex container"
                   style={{
                     backgroundColor: "#d9d9d9"}}>
              
-                  <div className='h-75 w-25 ' 
+                  <div className='h-75 w-25  ms-3' 
                                      > 
                     <img 
                       src={n?.productImage}
                       alt={n?.category.productCategory}
-                   style={{ width: "100px",  height: "115px", objectFit: "cover"  }} 
+                   style={{ width: "115px",  height: "150px", objectFit: "cover"  }} 
                     className='img-fluid' />
                   </div> 
 
@@ -110,8 +110,9 @@ const renderData = search.length >0 ?selectedSearch:catagoryData
                     </p>
                   </div>
                 </div>
+            </Link>
               </div>
-            ))}  
+          ))}  
            </div>  
              </div> 
 

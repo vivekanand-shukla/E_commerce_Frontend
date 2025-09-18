@@ -23,6 +23,8 @@ const Cart = () => {
     }
   }, [data]);
 
+
+
   const filteredCartData =
     search.trim().length > 0
       ? cartData.filter((item) =>
@@ -30,14 +32,33 @@ const Cart = () => {
         )
       : cartData;
 
+
+
+
+
+
+
+
+
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
+            
+
       <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
+
+
       <div className="container" style={{ paddingTop: "5%" }}>
+
+         
+
         <h5 className="fw-bold text-center my-4">
+
+
+
           MY CART ({cartData.length})
         </h5>
 
@@ -50,6 +71,7 @@ const Cart = () => {
               key={item._id}
               mainUrl={mainUrl}
               setCartData={setCartData}
+             
             />
           ))
         )}

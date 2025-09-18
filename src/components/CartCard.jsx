@@ -1,8 +1,65 @@
+
 import React from 'react'
-import { useState } from 'react';
+import { useState ,useEffect } from 'react';
 import { Link } from 'react-router-dom';
 const CartCard = ({item ,mainUrl ,setCartData ,cardOf}) => {
 const [quantity, setQuantity] = useState(1);
+
+
+//
+ const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(""); 
+   const [ isClicked , setIsClicked] = useState(false)
+   const [isDileverySet , setIsDileverySet] = useState(false)
+
+
+  
+        useEffect(() => {
+          fetchAddresses();
+        }, []);
+      
+        const fetchAddresses = async () => {
+          try {
+            const res = await fetch(`${mainUrl}/api/address`);
+            const data = await res.json();
+            setAddresses(data);
+            if (data.length > 0) {
+              setSelectedAddress(data[0].choosedAddressForOrder);
+              
+            }
+          } catch (err) {
+            // console.error("Error fetching addresses:", err);
+          }
+        };
+    
+
+         
+  const handleSetAddress = async (addr) => {
+     try {
+        // UPDATE request
+         const res = await fetch(`${mainUrl}/api/choosedAdress`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newChoosedAddress: addr }),
+        });
+     const a=    await res.json();
+     console.log(a)
+       
+setIsClicked(false)
+setIsDileverySet(true)
+    
+      fetchAddresses(); 
+    } catch (err) {
+    
+    }
+  };
+
+
+
+
+
+//
+
  async function handleRemoveToCart(e) {
     try {
       const response = await fetch(mainUrl + `/api/products/update/${e}`, {
@@ -42,7 +99,10 @@ const [quantity, setQuantity] = useState(1);
             // console.error("Error adding to cart:", error);
         }
     }
-
+    function handeBuyClicked(){
+        setIsClicked(true)
+        alert("enter adreess first")
+    }
 
 
 
@@ -59,8 +119,35 @@ const [quantity, setQuantity] = useState(1);
                 className="row mx-auto mb-4 g-5 a"
                 style={{ maxWidth: "90%" }}
               >
+
+
+                {  isClicked &&  addresses.length > 0 && (
+                            <div className="mb-3 d-flex align-items-center">
+                              <label className="fw-semibold me-2">Change Delivery Address:</label>
+                              <select
+                                className="form-select w-auto me-2 "  size={3}
+                                // value={selectedOption}
+                                onChange={(e) => setSelectedAddress(e.target.value)}
+                              >
+                                {addresses.map((addr) => (
+                                  <option key={addr._id} value={addr.address}  >
+                                    
+                
+                                    {addr.address}
+                              
+                                  </option>
+                                ))}
+                              </select>
+                              <button
+                                className="btn btn-primary btn-sm"
+                                onClick={() => handleSetAddress(selectedAddress)} 
+                              >
+                                Set as Delivery Address
+                              </button>
+                            </div>
+                          )}
                 {/* LEFT BLOCK - Product Details */}
-                <div className=" col-md-5 ">
+                <div className=" col-md-6 ">
                   <div
                     className=" h-100 w-100 "
                     style={{
@@ -127,13 +214,13 @@ const [quantity, setQuantity] = useState(1);
                           
                           <button
                             className="btn btn-secondary mb-2  w-75"
-                            style={{ borderRadius: "2px", }} onClick={()=>{handleRemoveToCart(item._id)}}
+                            style={{ borderRadius: "2px",  }} onClick={()=>{handleRemoveToCart(item._id)}}
                           >
                             Remove From Cart
                           </button>
                           <button
-                            className="btn btn-outline-secondary  w-75 "
-                            style={{ borderRadius: "2px" ,}} onClick={()=>handleMoveToWishList(item._id)}
+                            className="btn btn-secondary w-75"
+                            style={{ borderRadius: "2px" , }} onClick={()=>handleMoveToWishList(item._id)}
                           >
                             Move to Wishlist
                           </button>
@@ -176,27 +263,37 @@ const [quantity, setQuantity] = useState(1);
                     <p className="" style={{ fontSize: "0.85rem" }}>
                       You will save ₹{(discount*quantity).toFixed(2)} on this order
                     </p>
-                    { item.isProductOrdered?<Link to={`/checkout/${item._id}`}
+                    {/* { item.isProductOrdered?<Link to={`/checkout/${item._id}`}
                       className="btn btn-danger w-100 mt-2"
                       style={{  color: "white" }}
                     >
                       Cancel Order
-                    </Link> :
+                    </Link> : */}
+                    { isDileverySet ?
                     <Link to={`/checkout/${item._id}`}
                       className="btn w-100 mt-2"
                       style={{ backgroundColor: "#007bff", color: "white" }}
                     >
                       PLACE ORDER
-                    </Link>}
+                    </Link>:
+                    <button 
+                    onClick={  ()=>{handeBuyClicked() }}
+                      className="btn w-100 mt-2"
+                      style={{ backgroundColor: "#007bff", color: "white" }}
+                    >
+                      PLACE ORDER
+                    </button>
+                    
+                    }
                   </div>
                 </div>
 
                 <style>{`
-  @media (max-width: 400px) {
+  @media (max-width: 1024px) {
     .a {
       display: flex;
-      flex-direction: column; /* typo fix kiya column ka spelling */
-      gap: 1rem; /* thoda spacing upar niche blocks ke liye */
+      flex-direction: column; 
+      gap: 1rem; 
     }
     /* Buttons ko chhota karo */
     .a button {
@@ -215,6 +312,9 @@ const [quantity, setQuantity] = useState(1);
     }
       .b{
       width:50%
+      }
+      .d{
+       width:50%
       }
   }
 
@@ -235,9 +335,8 @@ const [quantity, setQuantity] = useState(1);
       width: 100%;
       height: auto;
     }
-       .b{
-      width:50% 
-      }
+      
+     
   }
 `}</style>
 

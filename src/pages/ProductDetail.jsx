@@ -14,29 +14,36 @@ const ProductDetail = () => {
   const [selectedProduct, setSelectedProduct] = useState();
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-
   const [quantity, setQuantity] = useState(1);
 
- 
   const [priceInfo, setPriceInfo] = useState({
     totalPrice: 0,
     originalPrice: 0,
     discount: 0,
   });
 
+  const sizes = ["S", "M", "L", "XL", "XXL"];
+
+  const [showSizeSelection, setShowSizeSelection] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+
+  const [relatedSelectedSizes, setRelatedSelectedSizes] = useState({});
+  const [relatedShowSizeSelection, setRelatedShowSizeSelection] = useState({});
+
   useEffect(() => {
     if (data && id) {
       const found = data.find((d) => d._id === id);
       if (found) {
         setSelectedProduct({ ...found });
+        setSelectedSize("");
+        setShowSizeSelection(false);
 
-        // Initial Price Calculation
         const discount = (found.offOnProduct / 100) * found.productPrice;
         const originalPrice = found.productPrice + discount;
         setPriceInfo({
           totalPrice: found.productPrice,
-          originalPrice: originalPrice,
-          discount: discount,
+          originalPrice,
+          discount,
         });
 
         setRelatedProducts(
@@ -49,7 +56,6 @@ const ProductDetail = () => {
       }
     }
   }, [data, id]);
-
 
   useEffect(() => {
     if (selectedProduct) {
@@ -66,34 +72,74 @@ const ProductDetail = () => {
     }
   }, [quantity, selectedProduct]);
 
-  async function handleAddToCart(e, a = 0) {
+  async function updateSizeInDB(productId, size) {
     try {
-      const response = await fetch(mainUrl + `/api/products/update/${e}`, {
+      const response = await fetch(`${mainUrl}/api/products/update/${productId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isAddedToCart: true }),
+        body: JSON.stringify({ size }),
       });
-
-      const resData = await response.json();
-      // console.log("API Response:", resData);
-
-      if (a == 1) {
-        setSelectedProduct((prev) =>
-          prev?._id === e ? { ...prev, isAddedToCart: true } : prev
-        );
-      } else if (a == 0) {
-        setRelatedProducts((prev) =>
-          prev?.map((p) =>
-            p?._id === e ? { ...p, isAddedToCart: true } : p
-          )
-        );
-      }
-    } catch (error) {
-      // console.error("Error adding to cart:", error);
+      return await response.json();
+    } catch (err) {
+      console.error("Size update failed:", err);
     }
   }
 
-  async function handleWishList(e, value, a = 0) {
+  const handleSizeSelectAndUpdate = async (size) => {
+    const res = await updateSizeInDB(selectedProduct._id, size);
+    if (res) {
+      setSelectedProduct((prev) => ({
+        ...prev,
+        size,
+      }));
+    }
+  };
+
+  async function handleAddToCart(productId, isMainProduct = false) {
+    const sizeToSend = isMainProduct ? selectedProduct?.size : relatedSelectedSizes[productId];
+
+    if (!sizeToSend) {
+      isMainProduct
+        ? setShowSizeSelection(true)
+        : setRelatedShowSizeSelection((prev) => ({ ...prev, [productId]: true }));
+      return;
+    }
+
+    try {
+      const response = await fetch(mainUrl + `/api/products/update/${productId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          isAddedToCart: true,
+          size: sizeToSend,
+        }),
+      });
+
+      const resData = await response.json();
+
+      if (isMainProduct) {
+        setSelectedProduct((prev) =>
+          prev?._id === productId ? { ...prev, isAddedToCart: true } : prev
+        );
+        setShowSizeSelection(false);
+      } else {
+        setRelatedProducts((prev) =>
+          prev.map((p) =>
+            p._id === productId ? { ...p, isAddedToCart: true } : p
+          )
+        );
+        setRelatedShowSizeSelection((prev) => {
+          const newState = { ...prev };
+          delete newState[productId];
+          return newState;
+        });
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  }
+
+  async function handleWishList(e, value, isMainProduct = false) {
     try {
       const response = await fetch(mainUrl + `/api/products/update/${e}`, {
         method: "POST",
@@ -102,21 +148,20 @@ const ProductDetail = () => {
       });
 
       const resData = await response.json();
-      // console.log("API Response:", resData);
 
-      if (a == 1) {
+      if (isMainProduct) {
         setSelectedProduct((prev) =>
           prev?._id === e ? { ...prev, isAddedToWishList: value } : prev
         );
-      } else if (a == 0) {
+      } else {
         setRelatedProducts((prev) =>
-          prev?.map((p) =>
-            p?._id === e ? { ...p, isAddedToWishList: value } : p
+          prev.map((p) =>
+            p._id === e ? { ...p, isAddedToWishList: value } : p
           )
         );
       }
     } catch (error) {
-      // console.error("Error adding to wishlist:", error);
+      console.error("Error adding to wishlist:", error);
     }
   }
 
@@ -128,17 +173,12 @@ const ProductDetail = () => {
 
   return (
     <div>
-      <Navbar
-        noOfCartItem={totalCartItem}
-        totalWishlistItem={totalWishlistItem}
-      />
+      <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
 
       <div className="container my-5">
         <div className="row g-4 my-5 a">
-          {/* LEFT IMAGE SECTION */}
+          {/* IMAGE + BUTTONS */}
           <div className="col-md-5 text-center position-relative">
-
-          <div  >
             <img
               src={selectedProduct.productImage}
               alt={selectedProduct.productName}
@@ -149,79 +189,80 @@ const ProductDetail = () => {
                 borderRadius: "2px",
                 width: "60%",
               }}
-              />
-            {/* Wishlist Button */}
+            />
             <button
-              className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
-              style={{
-                width: "36px",
-                height: "36px",
-                top: "10px",
-                right: "140px",
-              }}
+              className="btn btn-light position-absolute rounded-circle shadow"
+              style={{ width: "36px", height: "36px", top: "10px", right: "150px" }}
               onClick={() =>
-                selectedProduct.isAddedToWishList
-                  ? handleWishList(selectedProduct._id, false, 1)
-                  : handleWishList(selectedProduct._id, true, 1)
+                handleWishList(
+                  selectedProduct._id,
+                  !selectedProduct.isAddedToWishList,
+                  true
+                )
               }
             >
               {selectedProduct.isAddedToWishList ? (
-                <span style={{ fontSize: "1.6rem", color: "red" }}>&#10084;</span>
+                <span  style={{ fontSize: "1.6rem", color: "red", position:"relative",   top:"-9px"  , left:"-11px"}}>&#10084;</span>
               ) : (
-                <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>&#9825;</span>
+                <span  style={{ fontSize: "1.6rem", color: "#9c9c9cff", position:"relative",  top:"-9px" , left:"-3px"}}>&#9825;</span>
               )}
             </button>
 
-            {/* Buttons */}
-            <div className="d-flex flex-column my-3 mt-2 align-items-center">
-              {!selectedProduct.isProductOrdered? <Link to={`/checkout/${selectedProduct._id}`}
-                className="btn btn-primary my-2"
+            <div className="d-flex flex-column my-3 align-items-center">
+              <Link
+                to={`/checkout/${selectedProduct._id}`}
+                className={`btn my-2 ${selectedProduct.isProductOrdered ? "btn-danger" : "btn-primary"}`}
                 style={{ width: "60%", borderRadius: "2px" }}
               >
-                Buy Now
+                {selectedProduct.isProductOrdered ? "Cancel Order" : "Buy Now"}
               </Link>
-              :         <Link to={`/checkout/${selectedProduct._id}`}
-              className="btn btn-danger my-2"
-              style={{ width: "60%", borderRadius: "2px" }}
-              >
-                Cancel Order
-              </Link>}
-              {selectedProduct?.isAddedToCart ? (
-                <Link
-                to="/cart"
-                className="btn btn-primary text-light"
-                style={{
-                  width: "60%",
-                  borderRadius: "2px",
-                  textDecoration: "none",
-                }}
-                >
+
+              {selectedProduct.isAddedToCart ? (
+                <Link to="/cart" className="btn btn-primary text-light" style={{ width: "60%" , borderRadius: "2px", }}>
                   Go to Cart
                 </Link>
               ) : (
-                <button
-                className="btn text-light"
-                  style={{
-                    width: "60%",
-                    backgroundColor: "#898b8dff",
-                    borderRadius: "2px",
-                  }}
-                  onClick={() => handleAddToCart(selectedProduct._id, 1)}
+                <>
+                  <button
+                    className="btn text-light"
+                    style={{
+                      width: "60%",
+                      backgroundColor: "#898b8dff",
+                      borderRadius: "2px",
+                    }}
+                    onClick={() => handleAddToCart(selectedProduct._id, true)}
                   >
-                  Add to Cart
-                </button>
+                    Add to Cart
+                  </button>
+
+                  {showSizeSelection && (
+                    <div className="mt-2">
+                      <label className="fw-bold me-2">Choose Size:</label>
+                      {sizes.map((size) => (
+  <button
+    key={size}
+    onClick={() => handleSizeSelectAndUpdate(size)}
+    className={`btn btn-secondary mx-1 ${
+      selectedProduct.size === size ? "p-3 fs-5 fw-bold" : "p-2"
+    }`}
+  >
+    {size}
+  </button>
+))}
+
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
-              </div>
 
-          {/* RIGHT DETAILS SECTION */}
+          {/* DETAILS */}
           <div className="col-md-7">
-            <h4 className="fw-bold text-dark">{selectedProduct?.productName}</h4>
-            <p className="text-muted">{selectedProduct?.productDiscription}</p>
+            <h4 className="fw-bold text-dark">{selectedProduct.productName}</h4>
+            <p className="text-muted">{selectedProduct.productDiscription}</p>
 
-            {/* Ratings */}
-            <div className="mb-2">{selectedProduct?.productRating}</div>
+                       <div className="mb-2">{selectedProduct.productRating}</div>
 
             {/* Price Section */}
             <h3 className="fw-bold text-dark">
@@ -251,11 +292,19 @@ const ProductDetail = () => {
               />
             </div>
 
-            {/* Size */}
+            {/* Size Display with click to update */}
             <div className="mb-3">
               <label className="fw-bold me-2">Size:</label>
-              {["S", "M", "L", "XL", "XXL"].map((size) => (
-                <button key={size} className="btn btn-secondary btn-sm mx-1">
+              {sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => handleSizeSelectAndUpdate(size)}
+                  className={`btn btn-sm mx-1 ${
+                    selectedProduct.size === size
+                      ? "btn-secondary p-2"
+                      : "btn-outline-secondary"
+                  }`}
+                >
                   {size}
                 </button>
               ))}
@@ -290,96 +339,114 @@ const ProductDetail = () => {
         </div>
 
         {/* Related Products */}
-      </div>
+        <div className="mt-5 mx-4 my-4">
+          <h5 className="fw-bold mb-3">
+            More items you may like in {selectedProduct.category.productCategory}
+          </h5>
+          <div className="row g-3 a">
+            {relatedProducts?.map((product) => (
+              <div className="col-6 col-md-3" key={product._id}>
+                <div className="card h-100 shadow-sm position-relative">
+                  <img
+                    src={product.productImage}
+                    alt={product.productName}
+                    className="card-img-top"
+                    style={{ height: "200px", objectFit: "cover" }}
+                  />
+                  <button
+                    className="btn btn-light position-absolute rounded-circle shadow"
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      top: "10px",
+                      right: "20px",
+                    }}
+                    onClick={() =>
+                      handleWishList(
+                        product._id,
+                        !product.isAddedToWishList,
+                        false
+                      )
+                    }
+                  >
+                    {product.isAddedToWishList ? (
+                      <span style={{ fontSize: "1.6rem", color: "red", position:"relative", top:"-9px"  , left:"-11px" }}>
+                        &#10084;
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" ,position:"relative",  top:"-9px"  , left:"-3px"}}>
+                        &#9825;
+                      </span>
+                    )}
+                  </button>
 
-      {/* More Items Section */}
-      <div className="mt-5 mx-4 my-4">
-        <h5 className="fw-bold mb-3">
-          More items you may like in {selectedProduct.category.productCategory}
-        </h5>
-        <div className="row g-3 a">
-          {relatedProducts?.map((product) => (
-            <div className="col-6 col-md-3" key={product._id}>
-              <div className="card h-100 shadow-sm">
-                <img
-                  src={product.productImage}
-                  alt={product.productName}
-                  className="card-img-top"
-                  style={{ height: "200px", objectFit: "cover" }}
-                />
+                  <div className="card-body text-center d-flex flex-column justify-content-between">
+                    <div>
+                      <h6 className="card-title">{product.productName}</h6>
+                      <p className="fw-bold">₹{product.productPrice}</p>
+                    </div>
 
-                {/* Wishlist Button */}
-                <button
-                  className="btn btn-light position-absolute rounded-circle d-flex justify-content-center align-items-center shadow"
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    top: "10px",
-                    right: "20px",
-                  }}
-                  onClick={() =>
-                    product?.isAddedToWishList
-                      ? handleWishList(product?._id, false)
-                      : handleWishList(product?._id, true)
-                  }
-                >
-                  {product?.isAddedToWishList ? (
-                    <span style={{ fontSize: "1.6rem", color: "red" }}>
-                      &#10084;
-                    </span>
-                  ) : (
-                    <span style={{ fontSize: "1.6rem", color: "#9c9c9cff" }}>
-                      &#9825;
-                    </span>
-                  )}
-                </button>
+                    {product.isAddedToCart ? (
+                      <Link
+                        to="/cart"
+                        className="btn btn-primary w-100 text-light"
+                      >
+                        Go to Cart
+                      </Link>
+                    ) : (
+                      <>
+                        <button
+                          className="btn w-100 text-light"
+                          style={{ backgroundColor: "#9c9c9cff" }}
+                          onClick={() => handleAddToCart(product._id, false)}
+                        >
+                          Add to Cart
+                        </button>
 
-                <div className="card-body text-center">
-                  <h6 className="card-title">{product.productName}</h6>
-                  <p className="fw-bold">₹{product.productPrice}</p>
-
-                  {product?.isAddedToCart ? (
-                    <Link
-                      to="/cart"
-                      className="btn btn-primary w-100 text-light"
-                      style={{ textDecoration: "none" }}
-                    >
-                      Go to Cart
-                    </Link>
-                  ) : (
-                    <button
-                      className="btn w-100 text-light"
-                      style={{ backgroundColor: "#9c9c9cff" }}
-                      onClick={() => handleAddToCart(product._id)}
-                    >
-                      Add to Cart
-                    </button>
-                  )}
+                        {relatedShowSizeSelection[product._id] && (
+                          <div className="mt-2">
+                            <label className="fw-bold me-2">Choose Size:</label>
+                            {sizes.map((size) => (
+                              <button
+                                key={size}
+                                onClick={() =>
+                                  setRelatedSelectedSizes((prev) => ({
+                                    ...prev,
+                                    [product._id]: size,
+                                  }))
+                                }
+                                className={`btn btn-sm mx-1 ${
+                                  relatedSelectedSizes[product._id] === size
+                                    ? "btn-dark"
+                                    : "btn-outline-secondary"
+                                }`}
+                              >
+                                {size}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-          {relatedProducts?.length === 0 && (
-            <p className="text-muted">No related products found.</p>
-          )}
+            ))}
+            {relatedProducts?.length === 0 && (
+              <p className="text-muted">No related products found.</p>
+            )}
+          </div>
         </div>
       </div>
+
       <style>{`
-          @media (min-width: 700px) {
-          
+        @media (max-width: 360px) {
+          .a {
+            display: flex;
+            flex-direction: column;
           }
-          @media (max-width: 360px) {
-           .a{
-           display: flex;
-      flex-direction: column;
-         
-           }
-
-
-          }
-
-`}
-      </style>
+        }
+      `}</style>
     </div>
   );
 };

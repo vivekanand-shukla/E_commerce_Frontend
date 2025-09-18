@@ -1,5 +1,5 @@
  .sidebar {
-  position: fixed  ;
+  position: absolute  ;
   top: 80px ;
 
 
@@ -33,7 +33,7 @@
 
 .sidebar.closed {
   transform: translateX(-100%) !important;
-  display: none !important;
+  display: fixed !important;
 
 }
 

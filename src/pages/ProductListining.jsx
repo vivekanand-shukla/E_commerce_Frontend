@@ -15,7 +15,7 @@ function filterAll(priceFilter, category, rating, data) {
     return priceMatch && categoryMatch && ratingMatch;
   });
 }
-
+ 
 
 
 function searchFilter(data, search) {
@@ -37,9 +37,7 @@ const ProductListining = () => {
   const [priceShort, setPriceShort] = useState('')
 
 
-  if (rating) {
-   
-  }
+
 
   function handleClear() {
     setPriceFilter(0);
@@ -85,12 +83,7 @@ useEffect(() => {
       }
       setFilter(b)
     }
-
-
-
-
-
-  }, [priceFilter, category, rating, data, priceShort , products])
+ }, [priceFilter, category, rating, data, priceShort , products])
 
 
 
@@ -112,7 +105,7 @@ useEffect(() => {
     <div>
       < Navbar className="w-100" products={filter} noOfCartItem ={totalCartItem}  totalWishlistItem={totalWishlistItem}/>
 
-      <div className='mainContainer w-100 d-flex py-2 d-flex flex-wrap' >
+      <div className='container mainContainer w-100 d-flex py-2 d-flex flex-wrap' >
 
         <div style={{ width: "18%", height: "50%", background: "#f8f9fa", zIndex: 7 }}>
           <div className={`sidebar ${isOpen ? "open" : "closed"}`} >
@@ -121,7 +114,7 @@ useEffect(() => {
             <div className='container' >
 
               <div className='d-flex  justify-content-between'>
-                <p className='fw-bold ' >filter</p>
+                <p className='fw-bold ' >Filter</p>
                 <p onClick={handleClear} className=' text-decoration-underline'>clear
                 </p>
               </div>
@@ -129,12 +122,12 @@ useEffect(() => {
 
 
               <label htmlFor="priceRange" className="form-label  fw-bold d-flex w-90 justify-content-between" ><span> Price</span>  {priceFilter && <small style={{ color: "#9c9c9cff" }} >  below:₹ {priceFilter} </small>}</label>
-              <div className='w-100 d-flex justify-content-between' style={{ color: "#9c9c9cff" }}><span>0</span> <span>100k</span> <span>200k</span></div>
+              <div className='w-100 d-flex justify-content-between' style={{ color: "#9c9c9cff" }}><span>0</span> <span>50k</span> <span>100k</span></div>
               <input
                 type="range"
                 className="form-range custom-range"
                 min="0"
-                max="200000"
+                max="100000"
                 id="priceRange" onChange={(e) => setPriceFilter(e.target.value)}
               />
 
@@ -173,6 +166,18 @@ useEffect(() => {
               <div>
 
                 <label htmlFor="" className='fw-bold'>category</label>
+
+                <div>
+    <input
+      type="checkbox"
+      id="all-category"
+      checked={category.length === 0}  
+      onChange={() => setCategory([])}
+       className="me-2"
+    />
+    <label htmlFor="all-category ">All</label>
+  </div>
+
                 <div>{catagoryData?.map(n => <div key={n?._id}><input type="checkbox" checked={category.includes(n?.category.productCategory)} onChange={handleCategory} name="Category" id={n?._id} value={n?.category.productCategory} /> <label htmlFor={n?._id}>{n?.category.productCategory}</label></div>)}</div>
 
               </div>
@@ -231,7 +236,7 @@ useEffect(() => {
                 Showing All Products
               </h5>
               <small className="text-muted ps-2">
-                (Showing {data?.length || 0} products)
+                (Showing {cart?.length || 0} products)
               </small>
             </div>
 
