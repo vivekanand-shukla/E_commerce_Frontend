@@ -77,8 +77,8 @@ if(resData){
   return (
     <div className="col-md-4 col-lg-3">
 
-      <button onClick={notify}>hi</button>
-
+      {/* <button onClick={notify}>hi</button> */}
+  <button onClick={notify}>Notify !</button>
 
 
       <div className="card h-100 border-0 shadow-sm">
