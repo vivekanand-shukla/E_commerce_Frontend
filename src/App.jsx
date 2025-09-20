@@ -5,6 +5,8 @@ import { useState ,useEffect ,useContext } from 'react'
 import {useMainUrl} from './customHooks/useMainUrl'
 import { allContext } from './context/context'
  import { Link } from 'react-router-dom'
+ import 'bootstrap/dist/css/bootstrap.min.css';
+ import { ToastContainer, toast } from 'react-toastify';
 function App() {
   const { mainUrl } = useMainUrl()
 

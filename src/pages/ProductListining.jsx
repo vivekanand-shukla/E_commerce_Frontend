@@ -6,7 +6,7 @@ import { Link, useParams } from "react-router-dom"
 import { useMainUrl } from '../customHooks/useMainUrl'
 import ProductCard from '../components/ProductCard'
 import { allContext } from '../context/context'
-
+import { ToastContainer, toast } from 'react-toastify';
 function filterAll(priceFilter, category, rating, data) {
   return data.filter(d => {
     const priceMatch = priceFilter ? d.productPrice <= Number(priceFilter) : true;
@@ -16,7 +16,9 @@ function filterAll(priceFilter, category, rating, data) {
   });
 }
  
-
+  const addedToCart = () => {
+    toast.success("product added to cart");
+  };
 
 function searchFilter(data, search) {
   return data.filter(d => d.productName.toLowerCase().includes(search.toLowerCase()) || d.category.productCategory.toLowerCase().includes(search.toLowerCase()))
@@ -247,7 +249,7 @@ useEffect(() => {
               {!loading && data?.length === 0 && <p>No products found</p>}
 
               { cart?.map((product) => (
-                <ProductCard product={product} key={product._id}  setProducts={setProducts}  products={products}/>
+                <ProductCard product={product} key={product._id}  setProducts={setProducts}  products={products} addedToCart={addedToCart}/>
               )
 
               )}

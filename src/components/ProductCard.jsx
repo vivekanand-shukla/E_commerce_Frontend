@@ -1,12 +1,15 @@
 import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMainUrl } from "../customHooks/useMainUrl";
-
-const ProductCard = ({ product, setProducts }) => {
+import { ToastContainer, toast } from 'react-toastify';
+const ProductCard = ({ product, setProducts  }) => {
   const { mainUrl } = useMainUrl();
   const [size, setSize] = useState('');
 const [showSizeDropdown, setShowSizeDropdown] = useState(false);
-
+  const addedToCart = () => {
+    toast.success("product added to cart");
+  };
+const notify = () => toast('Wow so easy !');
   async function handleAddToCart(e) {
   if (!size) {
    
@@ -31,6 +34,10 @@ const [showSizeDropdown, setShowSizeDropdown] = useState(false);
       );
 
 setShowSizeDropdown(false);
+if(resData){
+
+  addedToCart()
+}
 
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -70,7 +77,7 @@ setShowSizeDropdown(false);
   return (
     <div className="col-md-4 col-lg-3">
 
-
+      <button onClick={notify}>hi</button>
 
 
 
@@ -142,7 +149,7 @@ setShowSizeDropdown(false);
         value={size}
         onChange={(e) => setSize(e.target.value)} className="form-select"
       >
-        <option value="">--Select--</option>
+       
         <option value="S">S</option>
         <option value="M">M</option>
         <option value="L">L</option>

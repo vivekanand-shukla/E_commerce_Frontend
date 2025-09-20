@@ -1,17 +1,52 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Link } from 'react-router-dom'
 import { allContext } from '../context/context'
+import { useMainUrl } from '../customHooks/useMainUrl'
+
 
 const Navbar = (p) => {
-  const { setSearch ,totalWishlistItem ,totalCartItem } = useContext(allContext)
+
+  const { mainUrl } = useMainUrl()
+  const { setSearch, totalWishlistItem, totalCartItem, settotalWishlistItem, settotalCartItem } = useContext(allContext)
+  const [products, setProducts] = useState([]);
+    
+  const productsUrl = `/api/products`
+
+useEffect(() => {
+
+
+  fetch(mainUrl + productsUrl)
+    .then((res) => res.json())
+    .then((data) => setProducts(data))
+    .catch((err) => console.error("Error:", err));
+
+}, [mainUrl,]);
+
+
+
+useEffect(() => {
+  if (products.length > 0) {
+    const totalWish = products.filter(p => p.isAddedToWishList).length;
+    const totalCart = products.filter(p => p.isAddedToCart).length;
+
+    settotalWishlistItem(totalWish);
+    settotalCartItem(totalCart);
+    console.log("Counts updated:", { totalWish, totalCart });
+   
+  }
+}, [products, settotalWishlistItem, settotalCartItem]); 
+
+
+
+
 
   function handleSearch(value) {
     setSearch(value)
   }
 
   return (
-    <div className=""  style={{ zIndex: 100, backgroundColor: "white", position: "relative" }}>
+    <div className="" style={{ zIndex: 100, backgroundColor: "white", position: "relative" }}>
       <div className="py-2 px-2 position-fixed top-0 w-100 bg-white z-3">
         <div className="container d-flex justify-content-between align-items-center w-100 flex-nowrap">
           {/* Brand */}
@@ -34,12 +69,12 @@ const Navbar = (p) => {
             {/* Wishlist */}
             <Link className="text-decoration-none" to={`/wishlist`}>
               <div className="position-relative">
-                <span className="wishlist-icon text-secondary" style={{ fontSize:"35px"}}>&#9825;</span>
-                 {totalWishlistItem>0 ? 
-                <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
-                  {totalWishlistItem}
-                </span>
-                 :""} 
+                <span className="wishlist-icon text-secondary" style={{ fontSize: "35px" }}>&#9825;</span>
+                {totalWishlistItem > 0 ?
+                  <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
+                    {totalWishlistItem}
+                  </span>
+                  : ""}
               </div>
             </Link>
 
@@ -47,11 +82,11 @@ const Navbar = (p) => {
             <Link className="text-decoration-none" to={`/cart`}>
               <div className="position-relative d-flex align-items-center cart-section">
                 <span className="cart-icon text-secondary">&#128722;</span>
-               {totalCartItem>0? 
-                 <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
-                  {totalCartItem}
-                </span>
-                  :""} 
+                {totalCartItem > 0 ?
+                  <span className="badge position-absolute bg-danger rounded-circle top-0 start-100 translate-middle">
+                    {totalCartItem}
+                  </span>
+                  : ""}
                 <span className="text-dark ms-1 cart-text">Cart</span>
               </div>
             </Link>
