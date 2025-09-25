@@ -10,7 +10,8 @@ import WishList from './pages/WishList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import { allContext } from './context/context.jsx';
 import CheckoutPage from './pages/CheckoutPage.jsx';
-import Navbar from './components/Navbar.jsx';
+
+import { ToastContainer } from 'react-toastify';
 // Router define karein
 const routes = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -33,7 +34,7 @@ function Root() {
   return (
     <allContext.Provider value={{ search, setSearch , cart ,setCart , totalCartItem  ,settotalCartItem ,totalWishlistItem ,settotalWishlistItem}}>
       <RouterProvider router={routes} />
-     
+           <ToastContainer />
     </allContext.Provider>
   )
 }

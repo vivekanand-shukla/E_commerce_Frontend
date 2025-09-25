@@ -3,6 +3,19 @@ import Navbar from "../components/Navbar";
 import { allContext } from "../context/context";
 import { useMainUrl } from "../customHooks/useMainUrl";
 
+import { toast } from 'react-toastify';
+
+
+const showToast = (t) => {
+  toast.success(`${t}`);
+};
+
+const showToastError = (t) => {
+  toast.error(`${t}`);
+};
+
+
+
 const UserProfile = () => {
   const { mainUrl } = useMainUrl(); // tumhari custom hook jo base URL de raha hai
   const { totalCartItem, totalWishlistItem } = useContext(allContext);
@@ -50,13 +63,17 @@ const UserProfile = () => {
         });
         await res.json();
         setEditId(null);
+        showToast("address updated")
       } else {
         // CREATE request
         await fetch(`${mainUrl}/api/address`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ address: newAddress }),
+
+
         });
+        showToast("address added")
       }
 
       setNewAddress("");
@@ -72,6 +89,9 @@ const UserProfile = () => {
       await fetch(`${mainUrl}/api/address/${id}`, {
         method: "DELETE",
       });
+     
+
+      showToastError('address deleted')
       fetchAddresses();
     } catch (err) {
       // console.error("Error deleting address:", err);
@@ -104,7 +124,7 @@ const handleChangeDeliveryAddress = async () => {
     setSelectedAddress(selectedOption); // UI update karo
     if(data){
 
-      alert("Delivery address updated successfully!");
+         showToast("address changed")
     }
   } catch (err) {
     // console.error("Error updating choosed address:", err);

@@ -4,6 +4,17 @@ import Navbar from "../components/Navbar";
 import { useFetch } from "../customHooks/useFetch";
 import { useMainUrl } from "../customHooks/useMainUrl";
 import { allContext } from "../context/context";
+import { toast } from 'react-toastify';
+
+
+const showToast = (t) => {
+  toast.success(`${t}`);
+};
+
+const showToastError = (t) => {
+  toast.error(`${t}`);
+};
+
 
 const ProductDetail = () => {
   const { mainUrl } = useMainUrl();
@@ -122,6 +133,8 @@ const ProductDetail = () => {
           prev?._id === productId ? { ...prev, isAddedToCart: true } : prev
         );
         setShowSizeSelection(false);
+
+        showToast("added to cart")
       } else {
         setRelatedProducts((prev) =>
           prev.map((p) =>
@@ -133,6 +146,8 @@ const ProductDetail = () => {
           delete newState[productId];
           return newState;
         });
+
+         showToast("added to cart")
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -148,7 +163,11 @@ const ProductDetail = () => {
       });
 
       const resData = await response.json();
-
+         if(resData && value){
+           showToast("added to wishlist")
+         }else{
+          showToastError('removed from wishlist')
+         }
       if (isMainProduct) {
         setSelectedProduct((prev) =>
           prev?._id === e ? { ...prev, isAddedToWishList: value } : prev

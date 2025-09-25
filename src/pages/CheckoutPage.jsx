@@ -75,7 +75,8 @@ const Checkout = () => {
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
       <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
-         <h3 className="pt-5 container">your current dilevery Address : {adress}</h3>
+         <h3 className="pt-5 container
+         ">your current dilevery Address : {adress}</h3>
       <div className="my-5">
         {productToBuy && <CheckoutCard item={productToBuy} mainUrl={mainUrl} isBuyed={false} />}
       </div>

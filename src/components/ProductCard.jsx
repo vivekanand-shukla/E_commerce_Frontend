@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMainUrl } from "../customHooks/useMainUrl";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 const ProductCard = ({ product, setProducts  }) => {
   const { mainUrl } = useMainUrl();
   const [size, setSize] = useState('');
@@ -9,7 +9,15 @@ const [showSizeDropdown, setShowSizeDropdown] = useState(false);
   const addedToCart = () => {
     toast.success("product added to cart");
   };
-const notify = () => toast('Wow so easy !');
+  const addedToWishListToast = () => {
+    toast.success("product added to wishlist");
+  };
+
+
+const removeToWishListToast = () => {
+  toast.error("Product removed from wishlist");
+};
+
   async function handleAddToCart(e) {
   if (!size) {
    
@@ -59,7 +67,13 @@ if(resData){
 
       const resData = await response.json();
       // console.log("API Response:", resData);
-    
+      if(resData && value){
+
+        addedToWishListToast()
+      }else if(resData && !value){
+        removeToWishListToast()
+
+      }
 
 
       setProducts(prevProducts =>
@@ -78,7 +92,7 @@ if(resData){
     <div className="col-md-4 col-lg-3">
 
       {/* <button onClick={notify}>hi</button> */}
-  <button onClick={notify}>Notify !</button>
+
 
 
       <div className="card h-100 border-0 shadow-sm">
@@ -158,7 +172,7 @@ if(resData){
       </select> </p>}
       </div>
 
-      
+   
     </div>
   );
 };

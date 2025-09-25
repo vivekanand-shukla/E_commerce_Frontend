@@ -3,6 +3,16 @@ import { useFetch } from "../customHooks/useFetch";
 import { useMainUrl } from '../customHooks/useMainUrl';
 import Navbar from '../components/Navbar';
 import { allContext } from '../context/context';
+import { toast } from 'react-toastify';
+
+
+const removeToWishListToast = () => {
+  toast.error("Product removed from wishlist");
+};
+
+const moveToWishListToCartToast = () => {
+  toast.error("moved to cart");
+};
 
 const WishList = () => {
   const [wishlistProducts, setwishlistProducts] = useState([]);
@@ -35,6 +45,10 @@ const WishList = () => {
       });
 
       const resData = await response.json();
+        if(resData ){
+          removeToWishListToast()
+        }
+
 
       setwishlistProducts((prev) =>
         value ? [...prev, resData] : prev.filter((product) => product._id !== e)
@@ -65,6 +79,9 @@ const WishList = () => {
       });
 
       const resData = await response.json();
+      if(resData){
+          moveToWishListToCartToast()
+      }
 
       setwishlistProducts((prev) =>
         prev.filter((product) => product._id !== productId)
