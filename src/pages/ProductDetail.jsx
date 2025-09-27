@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import  { useState, useContext, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useFetch } from "../customHooks/useFetch";
 import { useMainUrl } from "../customHooks/useMainUrl";
 import { allContext } from "../context/context";
 import { toast } from 'react-toastify';
-
+import { useNavigate } from "react-router-dom";
 
 const showToast = (t) => {
   toast.success(`${t}`);
@@ -17,6 +17,7 @@ const showToastError = (t) => {
 
 
 const ProductDetail = () => {
+    const navigate = useNavigate();
   const { mainUrl } = useMainUrl();
   const productsUrl = `/api/products`;
   const { data, loading, error } = useFetch(mainUrl, productsUrl, "GET");
@@ -26,7 +27,7 @@ const ProductDetail = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
 
   const [quantity, setQuantity] = useState(1);
-
+  const { totalCartItem, totalWishlistItem ,settotalWishlistItem, settotalCartItem } = useContext(allContext);
   const [priceInfo, setPriceInfo] = useState({
     totalPrice: 0,
     originalPrice: 0,
@@ -95,6 +96,19 @@ const ProductDetail = () => {
       console.error("Size update failed:", err);
     }
   }
+  async function updateQuantity(productId, quantity) {
+    try {
+      const response = await fetch(`${mainUrl}/api/products/update/${productId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productQuantity: quantity }),
+      });
+    const a=   await response.json();
+    a &&  navigate(`/checkout`);
+    } catch (err) {
+      console.error(" update failed:", err);
+    }
+  }
 
   const handleSizeSelectAndUpdate = async (size) => {
     const res = await updateSizeInDB(selectedProduct._id, size);
@@ -127,7 +141,7 @@ const ProductDetail = () => {
       });
 
       const resData = await response.json();
-
+ settotalCartItem(prev=> prev+1)
       if (isMainProduct) {
         setSelectedProduct((prev) =>
           prev?._id === productId ? { ...prev, isAddedToCart: true } : prev
@@ -161,7 +175,7 @@ const ProductDetail = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isAddedToWishList: value }),
       });
-
+     value?  settotalWishlistItem(prev=> prev+1):settotalWishlistItem(prev=> prev-1)
       const resData = await response.json();
          if(resData && value){
            showToast("added to wishlist")
@@ -184,7 +198,7 @@ const ProductDetail = () => {
     }
   }
 
-  const { totalCartItem, totalWishlistItem } = useContext(allContext);
+
 
   if (loading) return <p className="text-center mt-5">Loading product details...</p>;
   if (error) return <p className="text-danger text-center mt-5">Failed to load product</p>;
@@ -228,13 +242,19 @@ const ProductDetail = () => {
             </button>
 
             <div className="d-flex flex-column my-3 align-items-center">
-              <Link
-                to={`/checkout/${selectedProduct._id}`}
-                className={`btn my-2 ${selectedProduct.isProductOrdered ? "btn-danger" : "btn-primary"}`}
+             {selectedProduct.isAddedToCart? <button onClick={()=>updateQuantity(selectedProduct._id, quantity)}
+               
+                className="btn my-2   btn-primary"
                 style={{ width: "60%", borderRadius: "2px" }}
               >
-                {selectedProduct.isProductOrdered ? "Cancel Order" : "Buy Now"}
-              </Link>
+                 Buy Now
+              </button>:  <button onClick={()=>alert("first add to cart ")}
+                
+                className="btn my-2   btn-primary"
+                style={{ width: "60%", borderRadius: "2px" }}
+              >
+                 Buy Now
+              </button>}
 
               {selectedProduct.isAddedToCart ? (
                 <Link to="/cart" className="btn btn-primary text-light" style={{ width: "60%" , borderRadius: "2px", }}>

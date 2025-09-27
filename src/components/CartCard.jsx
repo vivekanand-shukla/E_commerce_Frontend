@@ -1,29 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-
+import { useContext } from "react";
+import { allContext } from "../context/context";
 const showToast = (t) => {
   toast.error(`${t}`);
 };
 
 const CartCard = ({ item, mainUrl, setCartData, quantity, onQuantityChange }) => {
-  const [addresses, setAddresses] = useState([]);
-  const [selectedAddress, setSelectedAddress] = useState("");
-  const [isClicked, setIsClicked] = useState(false);
 
-  useEffect(() => {
-    fetchAddresses();
-  }, []);
+     const {  settotalWishlistItem } =
+    useContext(allContext);
 
-  const fetchAddresses = async () => {
-    try {
-      const res = await fetch(`${mainUrl}/api/address`);
-      const data = await res.json();
-      setAddresses(data);
-      if (data.length > 0) {
-        setSelectedAddress(data[0].choosedAddressForOrder);
-      }
-    } catch (err) {}
-  };
+
+
+
+
 
   async function handleRemoveToCart(e) {
     try {
@@ -52,7 +43,7 @@ const CartCard = ({ item, mainUrl, setCartData, quantity, onQuantityChange }) =>
           isAddedToCart: false,
         }),
       });
-
+settotalWishlistItem(prev => prev+1)
       const resData = await response.json();
 
       if (resData) {
@@ -63,10 +54,7 @@ const CartCard = ({ item, mainUrl, setCartData, quantity, onQuantityChange }) =>
     } catch (error) {}
   }
 
-  function handeBuyClicked() {
-    setIsClicked(true);
-    alert("Enter address first");
-  }
+
 
   return (
     <div className="mx-auto mb-4 p-3 rounded bg-white" style={{ maxWidth: "600px" }}>
@@ -129,23 +117,7 @@ const CartCard = ({ item, mainUrl, setCartData, quantity, onQuantityChange }) =>
     </div>
   </div>
 
-  {/* Address select only when clicked */}
-  {isClicked && addresses.length > 0 && (
-    <div className="mt-3">
-      <label className="fw-semibold me-2">Change Delivery Address:</label>
-      <select
-        className="form-select w-100 w-md-auto"
-        size={3}
-        onChange={(e) => setSelectedAddress(e.target.value)}
-      >
-        {addresses.map((addr) => (
-          <option key={addr._id} value={addr.address}>
-            {addr.address}
-          </option>
-        ))}
-      </select>
-    </div>
-  )}
+ 
 </div>
 
   );

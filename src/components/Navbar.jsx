@@ -27,12 +27,12 @@ useEffect(() => {
 
 useEffect(() => {
   if (products.length > 0) {
-    const totalWish = products.filter(p => p.isAddedToWishList).length;
-    const totalCart = products.filter(p => p.isAddedToCart).length;
+    const totalWish = products.filter(p =>  p.isAddedToWishList).length;
+    const totalCart = products.filter(p =>  p.isAddedToCart).length;
 
     settotalWishlistItem(totalWish);
     settotalCartItem(totalCart);
-    console.log("Counts updated:", { totalWish, totalCart });
+   
    
   }
 }, [products, settotalWishlistItem, settotalCartItem]); 

@@ -25,6 +25,7 @@ const WishList = () => {
     totalCartItem,
     totalWishlistItem,
     settotalWishlistItem,
+    settotalCartItem
   } = useContext(allContext);
 
   const [sizeSelections, setSizeSelections] = useState({});
@@ -77,8 +78,9 @@ const WishList = () => {
           size: selectedSize,
         }),
       });
-
+      
       const resData = await response.json();
+      settotalCartItem(prev => prev+1)
       if(resData){
           moveToWishListToCartToast()
       }
@@ -174,7 +176,7 @@ const WishList = () => {
                             }))
                           }
                         >
-                          <option value="">--Select--</option>
+                     
                           <option value="S">S</option>
                           <option value="M">M</option>
                           <option value="L">L</option>

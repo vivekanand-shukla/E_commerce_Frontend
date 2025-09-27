@@ -59,20 +59,20 @@ const renderData = search.length >0 ?selectedSearch:catagoryData
  
        <div  style={{ backgroundColor: "#ffff" }}>
         <div  className='container' >
-          <div className="row container my-5" >
+          <div className="row container mt-5 mb-0" >
             { 
               renderData.length>0&& renderData.map((i) => (
-                <div className="col-md-3 my-4" key={i._id}>
+                <div className="col-md-3 mt-4" key={i._id}>
                  <CategoryCard e={i} />
                 </div>
               ))}
 
-            {selectedSearch.length ==0 && search.length>0 && <p className='my-5'>no category found</p>}
+            {selectedSearch.length ==0 && search.length>0 && <p className='mt-5'>no category found</p>}
 
               
           </div>
       
-          <div className="my-4  container">
+          <div className="my-0  container">
             <img
               src="https://static.vecteezy.com/system/resources/thumbnails/002/006/775/small/paper-art-shopping-online-on-smartphone-and-new-buy-sale-promotion-backgroud-for-banner-market-ecommerce-free-vector.jpg"
               alt="banner"

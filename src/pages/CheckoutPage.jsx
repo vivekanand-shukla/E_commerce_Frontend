@@ -4,17 +4,58 @@ import { useMainUrl } from "../customHooks/useMainUrl";
 import { useFetch } from "../customHooks/useFetch";
 import CheckoutCard from "../components/CheckoutCard";
 import { allContext } from "../context/context";
-import { useParams } from "react-router-dom";
+
 
 const Checkout = () => {
   const { mainUrl } = useMainUrl();
-  const { id } = useParams();
+
   const { data, loading, error } = useFetch(mainUrl, "/api/products", "GET");
   
-  const [productToBuy, setProductToBuy] = useState({});
-  const [orderedProducts, setOrderedProducts] = useState([]);
+
+  const [isAdressSelect ,setISAdressSelected]= useState(false)
   const { search, totalWishlistItem, totalCartItem } = useContext(allContext);
   const [adress, setSelectedAddress] = useState('')
+//
+
+
+
+
+
+const [addresses, setAddresses] = useState([]);
+const [selectedOption, setSelectedOption] = useState(adress);
+
+useEffect(() => {
+  fetchAllAddresses();
+}, []);
+
+const fetchAllAddresses = async () => {
+  try {
+    const res = await fetch(`${mainUrl}/api/address`);
+    const data = await res.json();
+    setAddresses(data);
+    if (data.length > 0) setSelectedOption(data[0].choosedAddressForOrder);
+  } catch (err) {
+    // console.error(err);
+  }
+};
+
+const handleChangeDeliveryAddress = async () => {
+  if (!selectedOption) return;
+  try {
+    await fetch(`${mainUrl}/api/choosedAdress`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newChoosedAddress: selectedOption }),
+    });
+    setSelectedAddress(selectedOption); // update UI
+    setISAdressSelected(true); // mark as selected
+  } catch (err) {
+    // console.error(err);
+  }
+};
+
+
+
 //
 
 
@@ -37,37 +78,10 @@ const Checkout = () => {
           }
         };
     
-//
-
-
-
-
   
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-       
-        const res = await fetch(`${mainUrl}/api/products`);
-        const data = await res.json();
-  if (data) {
-      setProductToBuy(data.find((d) => d._id === id));
-      setOrderedProducts(data.filter((d) => d.isProductOrdered === true));
-    }
-      } catch (error) {
-        // console.error("Error fetching data", error);
-      }
-    };
-    fetchData();
-    
-  },[orderedProducts]);
+ 
 
-  const filteredOrders =
-    search.trim().length > 0
-      ? orderedProducts.filter((item) =>
-          item.productName.toLowerCase().includes(search.toLowerCase())
-        )
-      : orderedProducts;
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -77,21 +91,37 @@ const Checkout = () => {
       <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
          <h3 className="pt-5 container
          ">your current dilevery Address : {adress}</h3>
-      <div className="my-5">
-        {productToBuy && <CheckoutCard item={productToBuy} mainUrl={mainUrl} isBuyed={false} />}
-      </div>
-      <div className="container" style={{ paddingTop: "5%" }}>
+         {addresses.length > 0 && (
+  <div className="d-flex container align-items-center  mt-3">
+    <select
+      className="form-select w-auto me-2"
+      value={selectedOption}
+      onChange={(e) => setSelectedOption(e.target.value)}
+    >
+      {addresses.map((addr) => (
+        <option key={addr._id} value={addr.address}>
+          {addr.address}
+        </option>
+      ))}
+    </select>
+    <button className="btn btn-primary btn-sm" onClick={handleChangeDeliveryAddress}>
+      Change Address
+    </button>
+  </div>
+)}
+      
+
+       <div className="container" style={{ paddingTop: "5%" }}>
+
+
+
         <h5 className="fw-bold text-center my-4">
-          Ordered Products ({orderedProducts.length})
+          {/* Ordered Products ({orderedProducts.length}) */}
         </h5>
 
-        {orderedProducts.length === 0 ? (
-          <p className="text-center">No products ordered</p>
-        ) : (
-          filteredOrders.map((item) => (
-            <CheckoutCard key={item._id} item={item} mainUrl={mainUrl}  setOrderedProducts={setOrderedProducts}  isBuyed={true}/>
-          ))
-        )}
+      
+            <CheckoutCard  mainUrl={mainUrl}  isAdressSelect={isAdressSelect}  />
+        
       </div>
     </div>
   );

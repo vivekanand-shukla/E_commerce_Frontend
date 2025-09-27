@@ -21,6 +21,7 @@ const routes = createBrowserRouter([
   { path: "/wishlist", element: <WishList /> },
   { path: "/user", element: <UserProfile /> },
   { path: "/checkout/:id", element: <CheckoutPage /> },
+  { path: "/checkout", element: <CheckoutPage /> },
 
 ])
 
@@ -30,9 +31,11 @@ function Root() {
   const [cart ,setCart] = useState([])
   const [totalCartItem ,settotalCartItem] = useState(0)
   const [totalWishlistItem ,settotalWishlistItem] = useState(0)
+    const [quantities, setQuantities] = useState({});
+
 
   return (
-    <allContext.Provider value={{ search, setSearch , cart ,setCart , totalCartItem  ,settotalCartItem ,totalWishlistItem ,settotalWishlistItem}}>
+    <allContext.Provider value={{search, setSearch , cart ,setCart , totalCartItem  ,settotalCartItem ,totalWishlistItem ,settotalWishlistItem , quantities , setQuantities}}>
       <RouterProvider router={routes} />
            <ToastContainer />
     </allContext.Provider>

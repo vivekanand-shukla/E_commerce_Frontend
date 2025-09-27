@@ -2,10 +2,17 @@ import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMainUrl } from "../customHooks/useMainUrl";
 import { toast } from 'react-toastify';
+import { allContext } from '../context/context'
+import { useContext  } from "react";
+
 const ProductCard = ({ product, setProducts  }) => {
-  const { mainUrl } = useMainUrl();
-  const [size, setSize] = useState('');
-const [showSizeDropdown, setShowSizeDropdown] = useState(false);
+  
+
+    const {  settotalWishlistItem, settotalCartItem } = useContext(allContext)
+    const { mainUrl } = useMainUrl();
+    const [size, setSize] = useState('');
+
+    const [showSizeDropdown, setShowSizeDropdown] = useState(false);
   const addedToCart = () => {
     toast.success("product added to cart");
   };
@@ -33,8 +40,10 @@ const removeToWishListToast = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isAddedToCart: true ,size }),
       });
-
       const resData = await response.json();
+     
+      settotalCartItem(prev=> prev+1)
+
      setProducts(prevProducts =>
         prevProducts.map(p =>
           p._id === e ? { ...p, isAddedToCart: true } : p
@@ -51,9 +60,7 @@ if(resData){
       console.error("Error adding to cart:", error);
     }
   }
-
-
-
+    
 
 
 
@@ -66,7 +73,8 @@ if(resData){
       });
 
       const resData = await response.json();
-      // console.log("API Response:", resData);
+   
+      value? settotalWishlistItem(prev => prev +1):settotalWishlistItem(prev => prev -1)
       if(resData && value){
 
         addedToWishListToast()

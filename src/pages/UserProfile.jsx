@@ -17,17 +17,21 @@ const showToastError = (t) => {
 
 
 const UserProfile = () => {
-  const { mainUrl } = useMainUrl(); // tumhari custom hook jo base URL de raha hai
-  const { totalCartItem, totalWishlistItem } = useContext(allContext);
 
-  // Backend se aane wale addresses
+
+
+
+  const { mainUrl } = useMainUrl(); 
+  const { totalCartItem, totalWishlistItem  ,quan} = useContext(allContext);
+
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(""); 
   const [selectedOption, setSelectedOption] = useState("");
   const [newAddress, setNewAddress] = useState("");
-  const [editId, setEditId] = useState(null); // address id for update
+  const [editId, setEditId] = useState(null); 
 
-  // Fetch all addresses on mount
+    const q = JSON.parse(localStorage.getItem("quan"));
+
   useEffect(() => {
     fetchAddresses();
   }, []);
@@ -45,8 +49,32 @@ const UserProfile = () => {
       // console.error("Error fetching addresses:", err);
     }
   };
+const [orderedData ,setOrderedData]= useState([])
+   useEffect(() => {
+    async function fetchCartData() {
+      try {
+        const response = await fetch(`${mainUrl}/api/products`);
+        const result = await response.json();
 
-  // Add or Update Address
+        if (result) {
+          const cartItems = result.filter((d) => d.isProductOrdered === true);
+
+          setOrderedData((prev) => {
+            if (JSON.stringify(prev) !== JSON.stringify(cartItems)) {
+              return cartItems;
+            }
+            return prev;
+          });
+        
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    }
+
+    fetchCartData();
+  }, [mainUrl]);
+
 
 
   
@@ -94,7 +122,7 @@ const UserProfile = () => {
       showToastError('address deleted')
       fetchAddresses();
     } catch (err) {
-      // console.error("Error deleting address:", err);
+   
     }
   };
 
@@ -119,18 +147,31 @@ const handleChangeDeliveryAddress = async () => {
     });
 
     const data = await res.json();
-    // console.log("Updated choosedAddressForOrder:", data);
+   
 
-    setSelectedAddress(selectedOption); // UI update karo
+    setSelectedAddress(selectedOption); 
     if(data){
 
          showToast("address changed")
     }
   } catch (err) {
-    // console.error("Error updating choosed address:", err);
+  
   }
 };
 
+
+  async function deleteHistory(productId) {
+    try {
+      const response = await fetch(`${mainUrl}/api/products/update/${productId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isProductOrdered:false }),
+      });
+    setOrderedData(prev => prev.filter(item => item._id !== productId));
+    } catch (err) {
+      console.error(" update failed:", err);
+    }
+  }
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "130vh" }}>
@@ -219,7 +260,63 @@ const handleChangeDeliveryAddress = async () => {
               {editId ? "Update" : "Add"}
             </button>
           </div>
+       
+            
+                  
+            
+            
+            
+
         </div>
+
+<div className="text-center">
+
+  <h2>Ordered history </h2>
+</div>
+  {/* // */}
+  <div className="row">
+   {orderedData.map(item => <div key={item._id} className="col-md-6">
+                    <div className=" mx-auto mb-4 p-3 rounded bg-white" style={{ maxWidth: "600px" }}>
+ 
+  <div className="d-flex flex-column flex-md-row">
+    <img
+      src={item.productImage}
+      alt={item.productName}
+      className="img-fluid rounded bg-light"
+      style={{ width: "300px", height: "300px", objectFit: "cover" }}
+    />
+
+    <div className="m-3 d-flex flex-column justify-content-between w-100">
+      <div>
+        <h5 className="fw-bold">{item.productName}</h5>
+
+        <p className="fw-bold mb-1 fs-5">₹{item.productPrice}</p>
+        {/* <p className="mb-2 text-muted small">{item.offOnProduct}% off</p> */}
+        {/* <p className="mb-2 text-muted small">{item.offOnProduct}% off</p> */}
+
+           <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => deleteHistory(item._id)}
+                    >
+                      🗑️
+                    </button>
+      </div>
+
+      
+    </div>
+  </div>
+
+ 
+
+</div> 
+
+
+
+                    {/* // */}
+            
+  </div>)}
+</div>
+
       </div>
     </div>
   );

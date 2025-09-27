@@ -4,17 +4,39 @@ import { useMainUrl } from "../customHooks/useMainUrl";
 import { useFetch } from "../customHooks/useFetch";
 import CartCard from "../components/CartCard";
 import { allContext } from "../context/context";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Cart = () => {
   const { mainUrl } = useMainUrl();
   const { data, loading, error } = useFetch(mainUrl, "/api/products", "GET");
   const [cartData, setCartData] = useState([]);
-  const { search, settotalCartItem, totalCartItem, totalWishlistItem } =
+  const { search, settotalCartItem, totalCartItem, totalWishlistItem, setQuantities, quantities } =
     useContext(allContext);
+   
+useEffect(() => {
+  async function updateAllQuantities() {
+    try {
+      // Loop over each key in the quantities object
+      for (const key of Object.keys(quantities)) {
+        const quantity = quantities[key];
+        const response = await fetch(`${mainUrl}/api/products/update/${key}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productQuantity: quantity }),
+        });
+        const data = await response.json();
+      
+      }
+    } catch (err) {
+      console.error("Update failed:", err);
+    }
+  }
 
+  if (quantities && Object.keys(quantities).length > 0) {
+    updateAllQuantities();
+  }
+}, [quantities]);
 
-  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     settotalCartItem(cartData.length);
@@ -41,8 +63,8 @@ const Cart = () => {
   const filteredCartData =
     search.trim().length > 0
       ? cartData.filter((item) =>
-          item.productName.toLowerCase().includes(search.toLowerCase())
-        )
+        item.productName.toLowerCase().includes(search.toLowerCase())
+      )
       : cartData;
 
 
@@ -78,7 +100,7 @@ const Cart = () => {
       <div className="container" style={{ paddingTop: "5%" }}>
         <h5 className="fw-bold text-center my-4">MY CART ({cartData.length})</h5>
 
- 
+
         {cartData.length > 0 && (
           <div className="col-md-6 mx-auto mb-4">
             <div
@@ -112,18 +134,18 @@ const Cart = () => {
                 You will save ₹{totalDiscount.toFixed(2)} on this order
               </p>
 
-{/* to={`/checkout/${item._id}`} */}
 
-              { 
-                    <Link 
-                      className="btn w-100 mt-2"
-                      style={{ backgroundColor: "#007bff", color: "white" }}
-                    >
-                      PLACE ORDER
-                    </Link>
-                   
-                    
-                    }
+
+              {
+                <Link to={`/checkout`}
+                  className="btn w-100 mt-2"
+                  style={{ backgroundColor: "#007bff", color: "white" }}
+                >
+                  PLACE ORDER
+                </Link>
+
+
+              }
             </div>
           </div>
         )}
@@ -133,8 +155,9 @@ const Cart = () => {
         ) : (
           filteredCartData.map((item) => (
             <CartCard
-             className="d-flex justify-content-center"
+              className="d-flex justify-content-center"
               item={item}
+
               key={item._id}
               mainUrl={mainUrl}
               setCartData={setCartData}
