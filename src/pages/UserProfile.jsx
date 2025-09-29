@@ -240,7 +240,7 @@ const handleChangeDeliveryAddress = async () => {
                 className="btn btn-primary btn-sm"
                 onClick={handleChangeDeliveryAddress}
               >
-                Set adress
+                Set   address
               </button>
             </div>
        </div>   )}

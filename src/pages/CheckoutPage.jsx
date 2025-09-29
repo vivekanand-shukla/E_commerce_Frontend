@@ -24,7 +24,7 @@ const Checkout = () => {
 
 
 const [addresses, setAddresses] = useState([]);
-const [selectedOption, setSelectedOption] = useState(adress);
+const [selectedOption, setSelectedOption] = useState('')
 
 useEffect(() => {
   fetchAllAddresses();
@@ -35,7 +35,11 @@ const fetchAllAddresses = async () => {
     const res = await fetch(`${mainUrl}/api/address`);
     const data = await res.json();
     setAddresses(data);
-    if (data.length > 0) setSelectedOption(data[0].choosedAddressForOrder);
+  if (data.length > 0) {
+  const defaultAddr = data.find(a => a.choosedAddressForOrder) || data[0];
+  setSelectedOption(defaultAddr.address);
+  setSelectedAddress(defaultAddr.address);
+}
   } catch (err) {
     // console.error(err);
   }
@@ -86,7 +90,8 @@ const handleChangeDeliveryAddress = async () => {
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
       <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
          <h3 className="pt-5 container
-         ">your current dilevery Address : {adress}</h3>
+         ">         Your Current Delivery Address : {adress || "No address selected"}
+</h3>
          {addresses.length > 0 && (
   <div className="d-flex container align-items-center  mt-3">
     <select

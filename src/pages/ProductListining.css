@@ -48,7 +48,7 @@
  .toggle-btn {
     position: fixed;  
     top:75px;
-    left: 980px;
+    left: 900px;
   
     z-index: 99;   
     display: block !important;
@@ -60,7 +60,7 @@
  .toggle-btn {
     position: fixed;  
     top:75px;
-    left: 725px;
+    left: 660px;
   
     z-index: 99;   
     display: block !important;
@@ -73,7 +73,7 @@
  .toggle-btn {
     position: fixed;  
     top:75px;
-    left: 380px;
+    left: 360px;
   
     z-index: 99;   
     display: block !important;
@@ -86,7 +86,7 @@
  .toggle-btn {
     position: fixed;  
     top:75px;
-    left: 330px;
+    left: 310px;
   
     z-index: 99;   
     display: block !important;
@@ -99,7 +99,7 @@
  .toggle-btn {
     position: fixed;  
     top:75px;
-    left: 265px;
+    left: 250px;
   
     z-index: 99;   
     display: block !important;
