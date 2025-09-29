@@ -96,7 +96,7 @@ useEffect(() => {
 
 
 
-  // ✅ Correct total for UI (Price - Discount + Delivery)
+
   const displayTotal = price1 - discount1 + delivery1;
 
   return (
@@ -145,7 +145,7 @@ useEffect(() => {
         <div className="text-center">
          {isAdressSelect ? <button className="btn btn-primary w-75" onClick={()=>buyAll()}> 
             checkout
-          </button>:<button className="btn btn-primary w-75" onClick={()=>alertMessageerror("first select adress")}> 
+          </button>:<button className="btn btn-primary w-75" onClick={()=>alertMessageerror("first select address")}> 
             checkout
           </button>}
         </div>
