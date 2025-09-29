@@ -5,7 +5,7 @@ import { useFetch } from "../customHooks/useFetch";
 import CheckoutCard from "../components/CheckoutCard";
 import { allContext } from "../context/context";
 
-
+  import {  toast } from 'react-toastify';
 const Checkout = () => {
   const { mainUrl } = useMainUrl();
 
@@ -17,7 +17,9 @@ const Checkout = () => {
   const [adress, setSelectedAddress] = useState('')
 //
 
-
+  const adressAlert = () => {
+    toast.success("address changed");
+  };
 
 
 
@@ -49,6 +51,7 @@ const handleChangeDeliveryAddress = async () => {
     });
     setSelectedAddress(selectedOption); // update UI
     setISAdressSelected(true); // mark as selected
+    adressAlert()
   } catch (err) {
     // console.error(err);
   }
@@ -74,17 +77,10 @@ const handleChangeDeliveryAddress = async () => {
               
             }
           } catch (err) {
-            // console.error("Error fetching addresses:", err);
+           
           }
         };
     
-  
- 
-
-
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
@@ -94,7 +90,7 @@ const handleChangeDeliveryAddress = async () => {
          {addresses.length > 0 && (
   <div className="d-flex container align-items-center  mt-3">
     <select
-      className="form-select w-auto me-2"
+      className="form-select  w-50 me-2 me-2"
       value={selectedOption}
       onChange={(e) => setSelectedOption(e.target.value)}
     >
@@ -113,10 +109,11 @@ const handleChangeDeliveryAddress = async () => {
 
        <div className="container" style={{ paddingTop: "5%" }}>
 
-
+         {loading && <div className="text-center">Loading...</div>}
+          {error &&   <div>Error: {error.message}</div>}
 
         <h5 className="fw-bold text-center my-4">
-          {/* Ordered Products ({orderedProducts.length}) */}
+        
         </h5>
 
       

@@ -184,7 +184,7 @@ const handleChangeDeliveryAddress = async () => {
           <p><strong>Name:</strong> Vivek Kumar</p>
           <p><strong>Email:</strong> vivek@example.com</p>
           <p><strong>Phone:</strong> +91 9876543210</p>
-          <p className="overflow-scroll w-75"><strong>Delivery Address:</strong   > <span className="overflow-scroll w-75">{selectedAddress || "No address selected"}</span></p>
+          <p className="text-wrap break-text w-75"><strong>Delivery Address:</strong   > <span className="text-wrap break-text w-75">{selectedAddress || "No address selected"}</span></p>
 
           {/* Address List */}
           <h6 className="fw-bold mt-4">Addresses</h6>
@@ -197,11 +197,11 @@ const handleChangeDeliveryAddress = async () => {
                   key={addr._id}
                   className="list-group-item d-flex justify-content-between align-items-center  w-100"
                 >
-                  <div className="overflow-scroll w-75">
+                  <div className="text-wrap break-text w-75">
 
                   {addr.address}
                   </div>
-                  <div>
+                  <div className="ps-1">
                     <button
                       className="btn btn-sm btn-outline-secondary me-2"
                       onClick={() => handleEditAddress(addr)}
@@ -224,20 +224,17 @@ const handleChangeDeliveryAddress = async () => {
           {addresses.length > 0 && (
             <div className="mb-3 d-flex align-items-center">
               <label className="fw-semibold me-2">Change Delivery Address:</label>
-              <select
-                className="form-select w-auto me-2 "  size={3}
-                // value={selectedOption}
-                onChange={(e) => setSelectedOption(e.target.value)}
-              >
-                {addresses.map((addr) => (
-                  <option key={addr._id} value={addr.address}  >
-                    
-
-                    {addr.address}
-              
-                  </option>
-                ))}
-              </select>
+               <select
+    className="form-select  w-50 me-2   text-nowrap"
+    
+    onChange={(e) => setSelectedOption(e.target.value)}
+  >
+    {addresses.map((addr) => (
+      <option key={addr._id} value={addr.address} className="text-truncate">
+        {addr.address}
+      </option>
+    ))}
+  </select>
               <button
                 className="btn btn-primary btn-sm"
                 onClick={handleChangeDeliveryAddress}
@@ -275,15 +272,15 @@ const handleChangeDeliveryAddress = async () => {
 </div>
   {/* // */}
   <div className="row">
-   {orderedData.map(item => <div key={item._id} className="col-md-6">
-                    <div className=" mx-auto mb-4 p-3 rounded bg-white" style={{ maxWidth: "600px" }}>
+   {orderedData.map(item => <div key={item._id} className="col-md-4">
+                    <div className="  mb-4 p-3 rounded bg-white" style={{ maxWidth: "300px" }}>
  
-  <div className="d-flex flex-column flex-md-row">
+  <div className="d-flex flex-column lex-lg-row">
     <img
       src={item.productImage}
       alt={item.productName}
       className="img-fluid rounded bg-light"
-      style={{ width: "300px", height: "300px", objectFit: "cover" }}
+      style={{ width: "100%", maxWidth: "250px", height: "300px", objectFit: "cover" }}
     />
 
     <div className="m-3 d-flex flex-column justify-content-between w-100">
@@ -291,8 +288,7 @@ const handleChangeDeliveryAddress = async () => {
         <h5 className="fw-bold">{item.productName}</h5>
 
         <p className="fw-bold mb-1 fs-5">₹{item.productPrice}</p>
-        {/* <p className="mb-2 text-muted small">{item.offOnProduct}% off</p> */}
-        {/* <p className="mb-2 text-muted small">{item.offOnProduct}% off</p> */}
+       
 
            <button
                       className="btn btn-sm btn-outline-danger"
@@ -316,7 +312,20 @@ const handleChangeDeliveryAddress = async () => {
             
   </div>)}
 </div>
+<style>
+  {
+    `
+    .break-text {
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
 
+    
+    
+    `
+  }
+</style>
       </div>
     </div>
   );

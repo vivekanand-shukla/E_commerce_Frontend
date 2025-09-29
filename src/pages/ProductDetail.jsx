@@ -200,15 +200,18 @@ const ProductDetail = () => {
 
 
 
-  if (loading) return <p className="text-center mt-5">Loading product details...</p>;
-  if (error) return <p className="text-danger text-center mt-5">Failed to load product</p>;
-  if (!selectedProduct) return <p className="text-center mt-5">Product not found</p>;
+
 
   return (
     <div>
       <Navbar noOfCartItem={totalCartItem} totalWishlistItem={totalWishlistItem} />
+          {loading&& <p className="text-center mt-5">Loading product details...</p>}
+          {error&&  <p className="text-danger text-center mt-5">Failed to load product</p>}
+          
+          {selectedProduct &&
 
-      <div className="container my-5">
+          
+      <div className="container  my-5">
         <div className="row g-4 my-5 a">
           {/* IMAGE + BUTTONS */}
           <div className="col-md-5 text-center position-relative">
@@ -235,9 +238,9 @@ const ProductDetail = () => {
               }
             >
               {selectedProduct.isAddedToWishList ? (
-                <span  style={{ fontSize: "1.6rem", color: "red", position:"relative",   top:"-9px"  , left:"-11px"}}>&#10084;</span>
+                <span  className="b" style={{ fontSize: "1.6rem", color: "red", position:"relative",   top:"-9px"  , left:"-11px"}}>&#10084;</span>
               ) : (
-                <span  style={{ fontSize: "1.6rem", color: "#9c9c9cff", position:"relative",  top:"-9px" , left:"-3px"}}>&#9825;</span>
+                <span className="c" style={{ fontSize: "1.6rem", color: "#9c9c9cff", position:"relative",  top:"-9px" , left:"-3px"}}>&#9825;</span>
               )}
             </button>
 
@@ -248,7 +251,7 @@ const ProductDetail = () => {
                 style={{ width: "60%", borderRadius: "2px" }}
               >
                  Buy Now
-              </button>:  <button onClick={()=>alert("first add to cart ")}
+              </button>:  <button onClick={()=>showToastError("first add to cart ")}
                 
                 className="btn my-2   btn-primary"
                 style={{ width: "60%", borderRadius: "2px" }}
@@ -350,7 +353,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Delivery Info */}
-            <div className="d-flex gap-4 mt-4">
+            <div className="d-flex gap-4 mt-4 ">
               <div className="text-center">
                 <span>🚚</span>
                 <p className="small">Free Delivery</p>
@@ -384,7 +387,7 @@ const ProductDetail = () => {
           </h5>
           <div className="row g-3 a">
             {relatedProducts?.map((product) => (
-              <div className="col-6 col-md-3" key={product._id}>
+              <div className=" col-md-4" key={product._id}>
                 <div className="card h-100 shadow-sm position-relative">
                   <img
                     src={product.productImage}
@@ -476,14 +479,23 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
-      </div>
+      </div>}
 
       <style>{`
         @media (max-width: 360px) {
           .a {
             display: flex;
             flex-direction: column;
+            
           }
+          .b {
+
+}
+
+.c {
+
+
+
         }
       `}</style>
     </div>

@@ -9,9 +9,12 @@ import { toast } from 'react-toastify';
 const removeToWishListToast = () => {
   toast.error("Product removed from wishlist");
 };
+const sizeselect = (t) => {
+  toast.error(`${t}`);
+};
 
 const moveToWishListToCartToast = () => {
-  toast.error("moved to cart");
+  toast.success("moved to cart");
 };
 
 const WishList = () => {
@@ -64,7 +67,7 @@ const WishList = () => {
 
     if (!selectedSize) {
       setShowSizeDropdownFor(productId);
-      alert("Please select a size first");
+      sizeselect("Please select a size first");
       return;
     }
 
@@ -103,8 +106,6 @@ const WishList = () => {
     settotalWishlistItem(filteredWishlist.length);
   }, [filteredWishlist, settotalWishlistItem]);
 
-  if (loading) return <div className="text-center mt-5">Loading Wishlist...</div>;
-  if (error) return <div className="text-center text-danger mt-5">Failed to load wishlist</div>;
 
   return (
     <div>
@@ -113,7 +114,10 @@ const WishList = () => {
         <h4 className="fw-bold mb-4">My Wishlist</h4>
 
         <div className="row g-4">
-          {filteredWishlist.length > 0 ? (
+          {loading && <div className="text-center mt-5">Loading Wishlist...</div>}
+          {error && <div className="text-center text-danger mt-5">Failed to load wishlist</div>}
+          {filteredWishlist.length ==0 &&  <div className="text-center text-muted">No items in wishlist</div>}
+          {filteredWishlist.length > 0 && (
             filteredWishlist.map((product) => (
               <div key={product._id} className="col-md-3">
                 <div
@@ -189,9 +193,8 @@ const WishList = () => {
                 </div>
               </div>
             ))
-          ) : (
-            <div className="text-center text-muted">No items in wishlist</div>
-          )}
+          ) 
+          }
         </div>
       </div>
     </div>

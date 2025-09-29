@@ -1,7 +1,7 @@
  .sidebar {
   position: absolute  ;
   top: 80px ;
-
+ 
 
 
     width: 15%; height: 50%; background: "#f8f9fa";
@@ -19,21 +19,25 @@
     .sidebar {
   transition: transform 0.3s ease-in-out;
   background: #f8f9fa;
-  min-height: 70vh;
+  min-height: 100vh;
   margin-top: 50px;
-  padding-top: 40px;
-  width: 90% !important;
+  padding-right: 60px;
+  width: 95% !important;
   position: fixed !important;
   top: 0 ;
   z-index: 7;
-
+  padding-top: 50px;
+  padding-bottom: 70px;
+    overflow-y: auto;   
+  overflow-x: hidden; 
+  max-height: 120vh;
 
 
 }
 
 .sidebar.closed {
-  transform: translateX(-100%) !important;
-  display: fixed !important;
+  transform: translateX(-110%) !important;
+  display: relative !important;
 
 }
 
@@ -43,11 +47,63 @@
 
  .toggle-btn {
     position: fixed;  
-    top: 45px;
-    left: 25px;
+    top:75px;
+    left: 980px;
   
-    z-index: 9999;   
+    z-index: 99;   
     display: block !important;
   }
   
+}
+@media screen and (max-width: 768px) {
+
+ .toggle-btn {
+    position: fixed;  
+    top:75px;
+    left: 725px;
+  
+    z-index: 99;   
+    display: block !important;
+  }
+
+
+}
+@media screen and (max-width: 425px) {
+
+ .toggle-btn {
+    position: fixed;  
+    top:75px;
+    left: 380px;
+  
+    z-index: 99;   
+    display: block !important;
+  }
+
+
+}
+@media screen and (max-width: 375px) {
+
+ .toggle-btn {
+    position: fixed;  
+    top:75px;
+    left: 330px;
+  
+    z-index: 99;   
+    display: block !important;
+  }
+
+
+}
+@media screen and (max-width: 320px) {
+
+ .toggle-btn {
+    position: fixed;  
+    top:75px;
+    left: 275px;
+  
+    z-index: 99;   
+    display: block !important;
+  }
+
+
 }

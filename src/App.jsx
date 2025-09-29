@@ -6,7 +6,7 @@ import {useMainUrl} from './customHooks/useMainUrl'
 import { allContext } from './context/context'
  import { Link } from 'react-router-dom'
  import 'bootstrap/dist/css/bootstrap.min.css';
- import { ToastContainer, toast } from 'react-toastify';
+
 function App() {
   const { mainUrl } = useMainUrl()
 
@@ -57,7 +57,11 @@ const renderData = search.length >0 ?selectedSearch:catagoryData
         <Navbar  />  
 
  
+
+
        <div  style={{ backgroundColor: "#ffff" }}>
+         { renderData.length ==0 && <div className='text-center'> <p className='mt-5  pt-5 container'>loading...</p></div>}
+        { renderData.length !=0 &&
         <div  className='container' >
           <div className="row container mt-5 mb-0" >
             { 
@@ -119,6 +123,7 @@ const renderData = search.length >0 ?selectedSearch:catagoryData
              </div> 
 
          </div> 
+         }
        </div> 
     </>
   )

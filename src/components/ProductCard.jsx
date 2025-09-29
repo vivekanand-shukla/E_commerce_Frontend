@@ -16,6 +16,9 @@ const ProductCard = ({ product, setProducts  }) => {
   const addedToCart = () => {
     toast.success("product added to cart");
   };
+  const sizefirst = () => {
+    toast.error("please select the size first");
+  };
   const addedToWishListToast = () => {
     toast.success("product added to wishlist");
   };
@@ -29,7 +32,7 @@ const removeToWishListToast = () => {
   if (!size) {
    
     setShowSizeDropdown(true);
-    alert("Please select a size first");
+   sizefirst()
     return;
   }
    

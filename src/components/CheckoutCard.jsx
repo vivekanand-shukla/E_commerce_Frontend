@@ -2,10 +2,14 @@ import  { useState, useEffect } from "react";
 import {  toast } from 'react-toastify';
 import { useContext  } from "react";
 import { allContext } from '../context/context'
+
 const CheckoutCard = ({ mainUrl ,isAdressSelect }) => {
   const [cartData, setCartData] = useState([]);
     const alertMessage = (m) => {
     toast.success(`${m}`);
+  };
+    const alertMessageerror = (m) => {
+    toast.error(`${m}`);
   };
       const {   settotalCartItem } = useContext(allContext)
   useEffect(() => {
@@ -141,7 +145,7 @@ useEffect(() => {
         <div className="text-center">
          {isAdressSelect ? <button className="btn btn-primary w-75" onClick={()=>buyAll()}> 
             checkout
-          </button>:<button className="btn btn-primary w-75" onClick={()=>alert("first select adress")}> 
+          </button>:<button className="btn btn-primary w-75" onClick={()=>alertMessageerror("first select adress")}> 
             checkout
           </button>}
         </div>

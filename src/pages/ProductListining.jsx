@@ -223,7 +223,7 @@ useEffect(() => {
 
             </div>
           </div>
-          <div><button className="btn  btn-outline-secondary  toggle-btn" onClick={() => setIsOpen(!isOpen)}>
+          <div className='h-25 toggle-btn w-100' style={{zIndex:100}}><button className="btn  btn-outline-secondary  toggle-btn" onClick={() => setIsOpen(!isOpen)}>
             ☰ 
           </button></div>
         </div>

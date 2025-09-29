@@ -16,7 +16,7 @@ const Cart = () => {
 useEffect(() => {
   async function updateAllQuantities() {
     try {
-      // Loop over each key in the quantities object
+ 
       for (const key of Object.keys(quantities)) {
         const quantity = quantities[key];
         const response = await fetch(`${mainUrl}/api/products/update/${key}`, {
@@ -87,8 +87,7 @@ useEffect(() => {
 
   const finalAmount = totalPrice - totalDiscount + totalDelivery;
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+ 
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", minHeight: "100vh" }}>
@@ -99,7 +98,8 @@ useEffect(() => {
 
       <div className="container" style={{ paddingTop: "5%" }}>
         <h5 className="fw-bold text-center my-4">MY CART ({cartData.length})</h5>
-
+             {loading && <div className="text-center mt-5">Loading Cart...</div>}
+          {error && <div className="text-center text-danger mt-5">Failed to load wishlist</div>}
 
         {cartData.length > 0 && (
           <div className="col-md-6 mx-auto mb-4">
