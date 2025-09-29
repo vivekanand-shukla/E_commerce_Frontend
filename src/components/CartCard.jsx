@@ -73,7 +73,9 @@ settotalWishlistItem(prev => prev+1)
 
         <p className="fw-bold mb-1 fs-5">₹{item.productPrice}</p>
         <p className="mb-2 text-muted small">{item.offOnProduct}% off</p>
-
+         <button className="btn btn-secondary">
+               {item.size}
+          </button>
         {/* QUANTITY COUNTER */}
         <div className="d-flex align-items-center my-3">
           <span className="me-2">Quantity:</span>
@@ -96,20 +98,25 @@ settotalWishlistItem(prev => prev+1)
           >
             +
           </button>
+ 
         </div>
+        
+
+       
+        
       </div>
 
       {/* ACTION BUTTONS */}
       <div>
         <button
-          className="btn btn-secondary mb-2 w-100 w-md-75 "
-          onClick={() => handleRemoveToCart(item._id)}
+          className="btn btn-secondary mb-2 w-100 "
+          onClick={() => handleRemoveToCart(item._id)} style={{width:"50%"}}
         >
           Remove From Cart
         </button>
         <button
-          className="btn btn-secondary w-100 w-md-75"
-          onClick={() => handleMoveToWishList(item._id)}
+          className="btn btn-secondary w-100 "
+          onClick={() => handleMoveToWishList(item._id)} style={{width:"50%"}}
         >
           Move to Wishlist
         </button>

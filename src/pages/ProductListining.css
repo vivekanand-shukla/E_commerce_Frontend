@@ -99,7 +99,7 @@
  .toggle-btn {
     position: fixed;  
     top:75px;
-    left: 275px;
+    left: 265px;
   
     z-index: 99;   
     display: block !important;

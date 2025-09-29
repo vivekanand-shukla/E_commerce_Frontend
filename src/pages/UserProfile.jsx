@@ -193,37 +193,38 @@ const handleChangeDeliveryAddress = async () => {
               <p className="text-muted">No addresses added yet.</p>
             ) : (
               addresses.map((addr) => (
-                <li
-                  key={addr._id}
-                  className="list-group-item d-flex justify-content-between align-items-center  w-100"
-                >
-                  <div className="text-wrap break-text w-75">
+              <li
+  key={addr._id}
+  className="list-group-item d-flex justify-content-between align-items-center w-100"
+>
+  <div className="text-wrap break-text me-2">
+    {addr.address}
+  </div>
+  <div className="d-flex align-items-center">
+    <button
+      className="btn btn-sm btn-outline-secondary me-2"
+      onClick={() => handleEditAddress(addr)}
+    >
+      ✏️
+    </button>
+    <button
+      className="btn btn-sm btn-outline-danger"
+      onClick={() => handleDeleteAddress(addr._id)}
+    >
+      🗑️
+    </button>
+  </div>
+</li>
 
-                  {addr.address}
-                  </div>
-                  <div className="ps-1">
-                    <button
-                      className="btn btn-sm btn-outline-secondary me-2"
-                      onClick={() => handleEditAddress(addr)}
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() => handleDeleteAddress(addr._id)}
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </li>
               ))
             )}
           </ul>
 
           {/* Dropdown to select address */}
           {addresses.length > 0 && (
-            <div className="mb-3 d-flex align-items-center">
+            <div>
               <label className="fw-semibold me-2">Change Delivery Address:</label>
+            <div className="mb-3 d-flex align-items-center">
                <select
     className="form-select  w-50 me-2   text-nowrap"
     
@@ -239,10 +240,10 @@ const handleChangeDeliveryAddress = async () => {
                 className="btn btn-primary btn-sm"
                 onClick={handleChangeDeliveryAddress}
               >
-                Set as Delivery Address
+                Set adress
               </button>
             </div>
-          )}
+       </div>   )}
 
           {/* Add/Edit Address */}
           <div className="d-flex">
@@ -271,8 +272,8 @@ const handleChangeDeliveryAddress = async () => {
   <h2>Ordered history </h2>
 </div>
   {/* // */}
-  <div className="row">
-   {orderedData.map(item => <div key={item._id} className="col-md-4">
+  <div className=" text-center d-flex align-items-center   flex-wrap w-100">
+   {orderedData.map(item => <div key={item._id} className=" ">
                     <div className="  mb-4 p-3 rounded bg-white" style={{ maxWidth: "300px" }}>
  
   <div className="d-flex flex-column lex-lg-row">
@@ -280,7 +281,7 @@ const handleChangeDeliveryAddress = async () => {
       src={item.productImage}
       alt={item.productName}
       className="img-fluid rounded bg-light"
-      style={{ width: "100%", maxWidth: "250px", height: "300px", objectFit: "cover" }}
+      style={{ width: "100%",  height: "300px", objectFit: "cover" }}
     />
 
     <div className="m-3 d-flex flex-column justify-content-between w-100">
@@ -290,12 +291,6 @@ const handleChangeDeliveryAddress = async () => {
         <p className="fw-bold mb-1 fs-5">₹{item.productPrice}</p>
        
 
-           <button
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() => deleteHistory(item._id)}
-                    >
-                      🗑️
-                    </button>
       </div>
 
       
